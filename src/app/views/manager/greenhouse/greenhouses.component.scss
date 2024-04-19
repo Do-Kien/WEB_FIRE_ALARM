@@ -1,0 +1,78 @@
+.card-header-option{
+    display: flex; 
+    gap: 5%; 
+    margin: 2% -2%;
+}
+
+span{
+    margin-top: 1.5%;
+    color: #6c757d;
+}
+
+.icon-trash-can{
+    color: red;
+}
+
+.icon-pen-to-square{
+    color: rgb(78, 167, 250);
+}
+
+.pagination{
+    display: flex;
+    justify-content: center;
+    float: right;
+}
+
+.pagination ul{
+    list-style-type: none;
+    display: flex;
+}
+
+.pagination li{
+    //margin-right: 7px;
+}
+
+.pagination li a{
+    //border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-link{
+    border-radius: inherit !important;
+}
+
+.table-sortable th {
+	cursor: pointer;
+}
+
+.table-sortable .th-sort-asc::after {
+	content: "\25b4";
+}
+
+.table-sortable .th-sort-desc::after {
+	content: "\25be";
+}
+
+.table-sortable .th-sort-asc::after,
+.table-sortable .th-sort-desc::after {
+	margin-left: 5px;
+}
+
+.table-sortable .th-sort-asc,
+.table-sortable .th-sort-desc {
+	background: rgba(0, 0, 0, 0.1);
+}
+
+.fa-arrow-up-wide-short:hover {
+    color:  rgb(76, 110, 98);
+}
+
+tr>th {
+    cursor: pointer;
+}
+
+tr>th:hover {
+    color: cadetblue;
+}

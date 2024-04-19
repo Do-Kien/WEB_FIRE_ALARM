@@ -1,0 +1,61 @@
+<div class="card border-top-primary border-top-3 mb-4" style="max-width: 82rem;">
+    <div class="row card-header" style="gap:10%; margin: 0;">
+        <div class="mb-3 col-12 col-md-12 col-lg-5">
+            <div class="mb-3 flex">
+                <span class="col-6">Tên luật điều khiển</span>
+                <form cForm [formGroup]="formScript">
+                    <input cFormControl formControlName="ruleName" style="width: 100%;" placeholder="Nhập Tên luật"
+                        type="text" />
+                </form>
+            </div>
+            <div class="mb-3 flex">
+                <span class="col-0 col-md-6 col-lg-6">Tủ điều khiển</span>
+                <select class="form-select" [(ngModel)]="selectedGateway" 
+                (ngModelChange)="setFormRuleValue();resetList()"
+                >
+                    <option *ngFor="let gateway of listGateways" [ngValue]="gateway.id">{{gateway.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3 col-12 col-md-12 col-lg-5">
+            <div class="mb-3 flex">
+                <span class="col-6">Khu vực</span>
+                <select class="form-select" [(ngModel)]="selectedZone"
+                (ngModelChange)="setFormRuleValue();resetList()"
+                >
+                    <option *ngFor="let zone of listZones" [ngValue]="zone.id">{{zone.name}}</option>
+                </select>
+            </div>
+
+            <div class="mb-3 flex">
+                <span class="col-6">Đầu ra</span>
+                <select class="form-select col-6" [(ngModel)]="selectedTypeDevice">
+                    <option *ngFor="let typeDevice of typeDeviceOptions" [value]="typeDevice">{{typeDevice}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3 card" style="margin: 0;">
+    <div class="row container-script-device-card">
+        <div class="row card col-10 col-md-5 col-lg-3 device-card" *ngFor="let device of listDevices | filterScriptDevice:selectedGateway:selectedZone">
+            <app-script-relay-card [relayName]="device.name" [relayPin]="device.pin" 
+            [relayId]="device.id" [relayGreenhouseId]="device.greenhouseId" [relayZoneId]="device.zoneId"
+                    [selectedGreenhouse]="selectedGateway" [selectedZone]="selectedZone"
+            (useRelay)="getUseRelay($event)" (notUseRelay)="removeUseRelay($event)"
+            >
+
+            </app-script-relay-card>
+        </div>
+    </div>
+</div>
+
+<div class="device-card-button mb-3 col-3">
+    <button cButton color="secondary" routerLink="../">Hủy bỏ</button>
+    <form cForm [formGroup]="formScript" (ngSubmit)="onAddScriptSubmit()">
+        <button cButton color="primary" type="submit">Thêm mới</button>
+    </form>
+</div>

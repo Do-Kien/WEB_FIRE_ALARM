@@ -1,0 +1,454 @@
+<div class="card border-top-primary border-top-3 mb-3" style="max-width: 82rem;">
+  <div class="card-header">
+    <h5>Danh sách Gateway </h5>
+    <div class="row my-4 gx-5">
+      <div class="col-12 col-md-12 col-lg-4 mb-3" style="display: flex;">
+        <span class="col-5">Profile Device</span>
+        <select class="form-select col-7" [(ngModel)]="searchProfileDevice" (ngModelChange)="getProfileDeviceSearch()">
+          <option value="">Tất cả</option>
+          <option *ngFor="let option of optionProfile" [ngValue]="option.id">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-12 col-lg-4 mb-3" style="display: flex;">
+        <span class="col-5">Trạng thái</span>
+        <select class="form-select col-7" [(ngModel)]="filterState" (ngModelChange)="getProfileDeviceSearch()">
+          <option value="">Tất cả</option>
+          <option *ngFor="let option of optionState" [ngValue]="option.value">{{option.viewValue}}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-12 col-lg-4 mb-3" style="display: flex;">
+        <span class="col-4">MAC</span>
+        <app-filter-form (filterTextChanged)="getFilterText($event)" [filterText]="filterText"></app-filter-form>
+      </div>
+    </div>
+    <div class="row my-4 gx-5">
+      <div class="col-12 col-md-12 col-lg-4 ml-3 mb-4" style="gap: 5%; display: flex;">
+        <button type="button" class="btn btn-outline-info" style="min-width: 5%;"[cModalToggle]="getPort.id" 
+          (click)="getListPort()" [disabled]="!buttonAddNew">Quản lý port</button>
+        <button type="button" class="btn btn-outline-success" style="min-width: 5%;"[cModalToggle]="sshRemoteModal.id" 
+        [disabled]="!buttonAddNew">Cấu hình</button>
+        <button type="button" class="btn btn-outline-primary" style="min-width: 5%;"[cModalToggle]="addGreenhouseModal.id" 
+        (click)="resetFormGreenhouse()" [disabled]="!buttonAddNew">Thêm mới</button>
+        <button (click)="addListGW()">ADDALL</button>
+      </div>
+    </div>
+  </div>
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th scope="col">STT</th>
+        <th scope="col" (click)="onColumnSortClick('label', 1)">
+          Tên
+          <i class="fa-solid fa-arrow-up-wide-short" *ngIf="isSortASC && activeColumn == 1"></i>
+          <i class="fa-solid fa-arrow-down-wide-short" *ngIf="!isSortASC && activeColumn == 1"></i>
+        </th>
+        <th scope="col" (click)="onColumnSortClick('name', 2)">
+          Địa chỉ MAC
+          <i class="fa-solid fa-arrow-up-wide-short" *ngIf="isSortASC && activeColumn == 2" ></i>
+          <i class="fa-solid fa-arrow-down-wide-short" *ngIf="!isSortASC && activeColumn == 2"></i>
+        </th>
+        <th scope="col" (click)="onColumnSortClick('type', 3)">
+          Loại thiết bị
+          <i class="fa-solid fa-arrow-up-wide-short" *ngIf="isSortASC && activeColumn == 3"></i>
+          <i class="fa-solid fa-arrow-down-wide-short" *ngIf="!isSortASC && activeColumn == 3"></i>
+        </th>
+        <th scope="col" (click)="onColumnSortClick('createdTime', 4)">
+          Thời gian tạo
+          <i class="fa-solid fa-arrow-up-wide-short" *ngIf="isSortASC && activeColumn == 4"></i>
+          <i class="fa-solid fa-arrow-down-wide-short" *ngIf="!isSortASC && activeColumn == 4"></i>
+        </th>
+        <th scope="col" (click)="onColumnSortClick('active', 5)">
+          Trạng thái
+          <i class="fa-solid fa-arrow-up-wide-short" *ngIf="isSortASC && activeColumn == 5"></i>
+          <i class="fa-solid fa-arrow-down-wide-short" *ngIf="!isSortASC && activeColumn == 5"></i>
+        </th>
+        <th scope="col">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let greenhouse of greenhouses; let i=index">
+        <th scope="row">{{(currentPage) * pageSize + i + 1}}</th>
+        <td>{{greenhouse.name}}</td>
+        <td>{{greenhouse.mac}}</td>
+        <td>{{greenhouse.deviceProfileName}}</td>
+        <td>{{greenhouse.createdAt | date: 'dd - MM - yyyy'}}</td>
+        <td *ngIf="greenhouse.active == true" style="color: green;">Đang hoạt động</td>
+        <td *ngIf="greenhouse.active == false" style="color: red;">Ngưng hoạt động</td>
+        <td>
+        <a class="mr-2"><i class="fa-solid fa-pen-to-square icon-pen-to-square" cTooltip="Sửa" cTooltipPlacement="top"
+          [cModalToggle]="editGreenhouseModal.id" (click)="getEditIdGreenhouse(greenhouse.id, greenhouse.name, greenhouse.mac, greenhouse.farmId, greenhouse.mode, greenhouse.deviceProfileId)"></i>
+        </a> |
+        <a class="mr-2"><i class="fas fa-trash-alt" cTooltip="Xóa" style="color: rgb(243, 109, 109);" cTooltipPlacement="top"
+            [cModalToggle]="deleteGreenhouseModal.id" (click)="getDeleteIdGreenhouse(greenhouse.id)"></i>
+        </a> |
+          <a class="ml-2"><i class="fa-regular fa-rectangle-xmark" style="color: red;" cTooltip="Disconnect Terminal" cTooltipPlacement="top"
+            (click)="disconnectSSHRemote(greenhouse.id, $event)"></i>
+          </a> |
+          <a class="ml-2"><i class="fa-solid fa-terminal" style="color: blue;" cTooltip="SSH" cTooltipPlacement="top"
+            [cModalToggle]="waitProcessModal.id" (click)="connectSSHRemote(greenhouse.id, $event)"></i>
+          </a> |
+          <a class="ml-2"><i class="fa-solid fa-display" style="color: blue;" cTooltip="Tunnel" cTooltipPlacement="top"
+            [cModalToggle]="portADBModal.id" (click)="getDeleteIdGreenhouse(greenhouse.id)"></i>
+         </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="d-block">
+  <div class="float-start">
+    <span>Tổng số bản ghi: {{ totalReport }}</span>
+  </div>
+  <div class="float-end pagination">
+    <ul>
+      <li (click)="onClickFirst()" class="page-item">
+        <a class="page-link">First</a>
+      </li>
+      <li (click)="onClickPrev()" class="page-item">
+        <a aria-label="Previous" class="page-link"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <div *ngFor="let page of pagesList;">
+        <div *ngIf="(currentPage <= 4 && page <= 7) || pagesList.length <= 7; else longPage">
+          <div *ngIf="page === currentPage; else unActive">
+            <li class="page-item active"><a class="page-link">{{page}}</a>
+            </li>
+          </div>
+          <ng-template #unActive>
+            <li class="page-item"><a class="page-link" (click)="onClickPage(page)">{{page}}</a></li>
+          </ng-template>
+        </div>
+        <ng-template #longPage>
+          <div *ngIf="page >= (currentPage-3) && page <= (currentPage+3)">
+            <div *ngIf="page === currentPage; else unActive">
+              <li class="page-item active"><a class="page-link">{{page}}</a>
+              </li>
+            </div>
+            <ng-template #unActive>
+              <li class="page-item"><a class="page-link" (click)="onClickPage(page)">{{page}}</a></li>
+            </ng-template>
+          </div>
+        </ng-template>        
+      </div>   
+      <li (click)="onClickNext()" class="page-item">
+        <a aria-label="Next" class="page-link"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li (click)="onClickLast()" class="page-item">
+        <a class="page-link">Last</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<c-modal #waitProcessModal [visible]="!isClickEnabled" backdrop="static" id="waitProcessModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Đang xử lý...</h5>
+    <button [cModalToggle]="waitProcessModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+      <div class="mb-3">
+          <span>Hệ thống đang xử lý. Vui lòng chờ trong giây lát!</span>
+      </div>
+      <div class="mb-3" style="margin-left: 25%;" id="spinnerScan">
+          <c-spinner color="primary" variant="grow"></c-spinner>
+          <c-spinner color="secondary" variant="grow"></c-spinner>
+          <c-spinner color="success" variant="grow"></c-spinner>
+          <c-spinner color="danger" variant="grow"></c-spinner>
+          <c-spinner color="warning" variant="grow"></c-spinner>
+          <c-spinner color="info" variant="grow"></c-spinner>
+          <c-spinner color="light" variant="grow"></c-spinner>
+          <c-spinner color="dark" variant="grow"></c-spinner>
+      </div>
+  </c-modal-body>
+  <c-modal-footer >
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal mapping port ADB -->
+<c-modal #portADBModal backdrop="static" id="portADBModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Nhập Local Port</h5>
+    <button [cModalToggle]="portADBModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm #formInput="ngForm">
+      <div class="mb-3">
+        <label cLabel>Port</label>
+        <input cFormControl ngModel name="port" type="number" min="1"/>
+        <div class="alert-text">
+          <small *ngIf="formInput.controls['port']?.errors?.['min']">Port phải lớn hơn 1</small>
+        </div>
+      </div>
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="portADBModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton [cModalToggle]="portADBModal.id" color="primary" (click)="mapADBPort(formInput, $event)" [disabled]="!formInput.valid">Tunnel</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal add greenhouse -->
+<c-modal #addGreenhouseModal backdrop="static" id="addGreenhouseModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Thêm mới Gateway </h5>
+    <button [cModalToggle]="addGreenhouseModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formGateway">
+      <div class="mb-3">
+        <label cLabel>Chọn loại Gateway</label>
+        <select cSelect formControlName="deviceProfileId" [(ngModel)]="profileId">
+          <option *ngFor="let option of optionProfile" [ngValue]="option.id">{{option.name}}</option>
+        </select> 
+      </div>
+      <div class="mb-3">
+        <label cLabel>Tên Gateway</label>
+        <input cFormControl formControlName="gatewayName" placeholder="Nhập Tên Gateway" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formGateway.get('gatewayName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Địa chỉ MAC</label>
+        <input cFormControl formControlName="gatewayMAC" placeholder="Nhập Địa chỉ MAC" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formGateway.get('gatewayMAC')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="addGreenhouseModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton [cModalToggle]="addGreenhouseModal.id" color="primary" (click)="addGatewayToPlatform()" [disabled]="!formGateway.valid">Thêm mới</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal add greenhouse -->
+<c-modal #sshRemoteModal backdrop="static" id="sshRemoteModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Cấu hình SSH Remote</h5>
+    <button [cModalToggle]="sshRemoteModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formConfigSSH">
+      <div class="mb-3">
+        <label cLabel>User</label>
+        <input cFormControl formControlName="user" placeholder="User" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formConfigSSH.get('user')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Host</label>
+        <input cFormControl formControlName="host" placeholder="Host" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formConfigSSH.get('host')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Server Port</label>
+        <input cFormControl formControlName="serverPort" placeholder="Server Port" type="number" />
+        <div class="alert-text">
+          <small *ngIf="formConfigSSH.get('serverPort')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Key</label>
+        <input cFormControl formControlName="key" placeholder="Key" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formConfigSSH.get('key')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="sshRemoteModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton [cModalToggle]="sshRemoteModal.id" color="primary" (click)="configServer()" [disabled]="!formConfigSSH.valid">Cấu hình</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal edit greenhouse -->
+<c-modal #editGreenhouseModal backdrop="static" id="editGreenhouseModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Cập nhật Gateway </h5>
+    <button [cModalToggle]="editGreenhouseModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formGateway">
+      <div class="mb-3">
+        <label cLabel>Tên Gateway</label>
+        <input cFormControl formControlName="gatewayName" placeholder="Nhập Tên Gateway" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formGateway.get('gatewayName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Địa chỉ MAC</label>
+        <input cFormControl placeholder="Nhập Địa chỉ MAC" [value]="formGateway.value.gatewayMAC" type="text"
+          disabled="true" />
+      </div>
+      <div class="mb-3">
+        <label cLabel>Chọn loại Gateway</label>
+        <select cSelect formControlName="deviceProfileId">
+          <option *ngFor="let option of optionProfile" [ngValue]="option.id">{{option.name}}</option>
+        </select> 
+      </div>
+      <!-- <div class="mb-3">
+        <label cLabel>Chế độ</label>
+        <input cFormControl *ngIf="modeGreenhouse=='0'" [value]="'Thủ công'" type="text" disabled="true" />
+        <input cFormControl *ngIf="modeGreenhouse=='1'" [value]="'Chạy lịch'" type="text" disabled="true" />
+        <input cFormControl *ngIf="modeGreenhouse=='2'" [value]="'Chạy luật'" type="text" disabled="true" />
+      </div> -->
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="editGreenhouseModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton [cModalToggle]="editGreenhouseModal.id" color="primary" (click)="editGreenhouse()">Cập nhật</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal delete greenhouse -->
+<c-modal #deleteGreenhouseModal backdrop="static" id="deleteGreenhouseModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Xóa Gateway </h5>
+    <button [cModalToggle]="deleteGreenhouseModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    Bạn có chắc chắn muốn xóa Gateway này không ?
+    Dữ liệu không thể khôi phục được sau khi xóa .
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="deleteGreenhouseModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton color="danger" [cModalToggle]="deleteGreenhouseModal.id" (click)="deleteGreenhouse()">Xác nhận</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- SSH Remote  -->
+<c-modal [backdrop]="'static'" alignment="center" 
+  [visible]="visible">
+  <c-modal-header>
+    <h5 cModalTitle>Thông tin tài khoản</h5>
+    <button (click)="toggleSSHRemote()" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formDeviceAccount">
+      <div class="mb-3 mt-3">
+        <label cLabel>Username</label>
+        <input cFormControl formControlName="username" placeholder="Nhập username" type="text"/>
+        <div class="alert-text mb-2">
+          <small *ngIf="formDeviceAccount.get('username')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+      <div class="mb-3 mt-3">
+        <label cLabel>Password</label>
+        <input cFormControl formControlName="password" placeholder="Nhập password" type="text"/>
+        <div class="alert-text mb-2">
+          <small *ngIf="formDeviceAccount.get('password')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button (click)="toggleSSHRemote()" cButton color="secondary">Hủy bỏ</button>
+    <button cButton color="primary" [disabled]="!formDeviceAccount.valid" (click)="openTerminal()">SSH Remote</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- SSH Remote  -->
+<c-modal [backdrop]="'static'" alignment="center" 
+  [visible]="visibleADB">
+  <c-modal-header>
+    <h5 cModalTitle>Thông tin Server</h5>
+    <button (click)="toggleADBRemote()" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm>
+      <div class="mb-3">
+        <label cLabel>IP</label>
+        <input cFormControl [value]="currentIP" type="text" readonly/>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Port</label>
+        <input cFormControl [value]="currentForwardPort" type="text" readonly/>
+      </div>
+    </form>
+  </c-modal-body>
+  <!-- <c-modal-footer>
+    <button (click)="toggleADBRemote()" cButton color="secondary">Hủy bỏ</button>
+    <button cButton color="primary" [disabled]="!formDeviceAccount.valid" (click)="openTerminal()">SSH Remote</button>
+  </c-modal-footer> -->
+</c-modal>
+
+<!-- Modal disconnect remote -->
+<c-modal #disconnectRemoteModal backdrop="static" id="disconnectRemoteModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Lựa chọn ngắt kết nối</h5>
+    <button [cModalToggle]="disconnectRemoteModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div class="mb-3">
+        <label cLabel>Loại Remote</label>
+        <select class="form-select" [(ngModel)]="typeCancelRemote">
+            <option *ngFor="let option of optionCancelTerminal" [ngValue]="option.value">{{option.viewValue}}</option>
+        </select>
+    </div>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="disconnectRemoteModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton color="primary" [cModalToggle]="disconnectRemoteModal.id">Xác nhận</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal get port -->
+<c-modal #getPort backdrop="static" id="getPort" alignment="center" size="xl">
+  <c-modal-header>
+    <h5 cModalTitle>Danh sách port </h5>
+    <button [cModalToggle]="getPort.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Port</th>
+          <th scope="col">Tên</th>
+          <th scope="col">MAC</th>
+          <th scope="col">Port Local</th>
+          <th scope="col">Loại Remote</th>
+          <th scope="col">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let port of ports; let i=index">
+          <td>{{port.port}}</td>
+          <td>{{port.name}}</td>
+          <td>{{port.mac}}</td>
+          <td>{{port.localPort}}</td>
+          <td>{{port.typeRemote}}</td>
+          <td>
+            <a class="ml-2"><i class="fa-solid fa-trash" style="color: red;" cTooltip="Xóa" cTooltipPlacement="top"
+              (click)="deletePort(port.port)"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </c-modal-body>
+</c-modal>
+
+<c-modal #confirmProfile backdrop="static" id="confirmProfile" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Chọn loại GateWay</h5>
+    <button cButtonClose [cModalToggle]="confirmProfile.id"></button>
+  </c-modal-header>
+  <c-modal-body>
+    <select cSelect id="autoSizingSelect" [(ngModel)]="profileId">
+      <option *ngFor="let option of optionProfile" [ngValue]="option.id">{{option.name}}</option>
+    </select>      
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="confirmProfile.id" cButton color="secondary">Đóng</button>
+    <button cButton color="primary" [cModalToggle]="addGreenhouseModal.id" (click)="comfirmDeviceProfile()">Xác nhận</button>
+  </c-modal-footer>
+</c-modal>
+
+<app-show-alerts></app-show-alerts>

@@ -1,0 +1,38 @@
+.flex{
+    display: flex;
+}
+
+.container-script-device{
+    max-width: 82rem;
+    margin: 0;
+    gap: 4%;
+}
+
+.container-script-device-card{
+    height: 28rem;
+    margin: 0;
+    margin-top: 1%;
+    margin-bottom: 2%;
+    gap: 5%;
+    overflow: scroll;
+}
+
+.device-card{
+    padding-bottom: 15px;
+        height: fit-content;
+    margin-left: 4%;
+    margin-top: 2%;
+    border: 1px solid#321fdb;
+}
+
+
+.device-card-text{
+    text-align: center;
+    margin-top: 8%;
+}
+.device-card-button {
+    float: right;
+    display: flex;
+    gap: 5%;
+    margin-top: 2%;
+}

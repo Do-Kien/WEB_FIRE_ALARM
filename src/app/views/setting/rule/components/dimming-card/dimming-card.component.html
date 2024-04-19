@@ -1,0 +1,56 @@
+<div class="device-card-container">
+    <div class="row device-card-name">
+        <div class="col-10">
+            <span>LED BLE</span>
+        </div>
+        <div class="col-2" style="margin-top: 2%;">
+            <c-form-check inline sizing="lg">
+                <input class="device-card-input" cFormCheckInput id="inline6" type="checkbox"
+                [(ngModel)]="useCheckboxIsChecked" (change)="onCheckboxChange()"
+                />
+            </c-form-check>
+        </div>   
+    </div>
+    <div class="" style="height: 36%; gap: 5%;">
+        <div class="row">
+            <div class="row">
+                <span class="col-12 col-md-10 col-lg-10">Thông số cấu hình </span>
+                <!-- <c-form-check class="col-3 col-md-4 col-lg-2">
+                    <input cFormCheckInput id="checkTwo" type="checkbox" 
+                    class="configCheckbox"
+                    />
+                  </c-form-check> -->
+            </div>
+            <div class="row">
+                <form cForm class="col-6"> 
+                    <input cFormControl id="editFarmNameInput" style="width: 100%;" placeholder="DIM"
+                        type="number" />
+                </form> 
+                <!-- <form cForm class="col-6"> 
+                    <input cFormControl id="editFarmNameInput" style="width: 100%;" placeholder="CCT"
+                        type="number" />
+                </form>  -->
+            </div> 
+        </div>
+        <div class="row">
+            <div class="row">
+                <span class="col-12 col-md-10 col-lg-10">Độ trễ & Thời gian</span>
+                <c-form-check class="col-3 col-md-4 col-lg-2">
+                    <input  cFormCheckInput id="checkTwo" type="checkbox"
+                    class="optionCheckbox" #optionCheckbox [disabled]="!useCheckboxIsChecked" (change)="onCheckboxChange()"
+                    />
+                  </c-form-check>
+            </div>
+            <div class="row">
+                <form cForm class="col-6"> 
+                    <input cFormControl id="editFarmNameInput" style="width: 100%;" placeholder="Min"
+                        type="number" [disabled]="!(useCheckboxIsChecked && optionCheckboxIsChecked)" (change)="onCheckboxChange()"/>
+                </form> 
+                <form cForm class="col-6">
+                    <input cFormControl id="editFarmNameInput" style="width: 100%;" placeholder="Min"
+                        type="number" [disabled]="!(useCheckboxIsChecked && optionCheckboxIsChecked)" (change)="onCheckboxChange()"/>
+                </form>
+            </div> 
+        </div>
+    </div>
+</div> 

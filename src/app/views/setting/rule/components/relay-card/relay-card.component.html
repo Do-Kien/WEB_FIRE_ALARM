@@ -1,0 +1,49 @@
+<div class="device-card-container">
+    <div class="row device-card-name">
+        <div class="col-10">
+            <span>{{relayName}}</span>
+        </div>
+        <div class="col-2" style="margin-top: 2%;">
+            <c-form-check inline sizing="lg">
+                <input class="device-card-input" cFormCheckInput type="checkbox"
+                    [(ngModel)]="useCheckboxIsChecked" (change)="onCheckboxChange()" 
+                    (ngModelChange)="setRelayFormComtrolValue()"
+                    />
+            </c-form-check>
+        </div>
+    </div>
+    <div class="row device-card-status">
+        <div class="row col-12 device-card-status-text">
+            <span class="col-8 col-md-8 col-lg-8">Trạng thái: </span>
+            <c-form-check [switch]="true" class="col-4 col-md-4 col-lg-4">
+                <input cFormCheckInput check type="checkbox" class="statusCheckbox" [disabled]="!useCheckboxIsChecked" (change)="onCheckboxChange()" 
+                [(ngModel)]="relayStatus" (ngModelChange)="setRelayFormComtrolValue()"
+                />
+            </c-form-check>
+        </div>
+        <div class="row col-12 device-card-status-text">
+            <span class="col-9 col-md-8 col-lg-8">Tùy chọn: </span>
+            <c-form-check class="col-3 col-md-4 col-lg-4">
+                <input cFormCheckInput id="checkTwo" type="checkbox" class="optionCheckbox" #optionCheckbox [disabled]="!(useCheckboxIsChecked && relayStatus)" (change)="onCheckboxChange()" />
+            </c-form-check>
+        </div>
+    </div>
+    <div class="row device-card-value-input">
+        <div class="col-5">
+            <span>Độ trễ</span>
+            <form cForm>
+                <input cFormControl id="editFarmNameInput" style="width: 100%;" placeholder="Min" type="number" 
+                [disabled]="!(useCheckboxIsChecked && relayStatus && optionCheckboxIsChecked)"
+                />
+            </form>
+        </div>
+        <div class="col-5">
+            <span>Thời gian</span>
+            <form cForm>
+                <input cFormControl id="editFarmNameInput" style="width: 100%;" placeholder="Min" type="number" 
+                [disabled]="!(useCheckboxIsChecked && relayStatus && optionCheckboxIsChecked)"
+                />
+            </form>
+        </div>
+    </div>
+</div>

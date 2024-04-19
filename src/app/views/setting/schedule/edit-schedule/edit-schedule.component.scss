@@ -1,0 +1,72 @@
+.flex{
+    display: flex;
+}
+
+.container-script-device{
+    max-width: 82rem;
+    margin: 0;
+    gap: 4%;
+}
+
+.container-script-device-card{
+    height: 28rem;
+    margin: 0;
+    margin-top: 1%;
+    margin-bottom: 2%;
+    gap: 5%;
+    overflow: scroll;
+}
+
+.device-card{
+    height: 42%;
+    margin-left: 4%;
+    margin-top: 2%;
+    border: 1px solid#321fdb;
+}
+
+.device-card-name{
+    margin-top: 2%;
+    display: flex;
+    height: 20%;
+}
+
+.device-card-avatar{
+    display: flex;
+    height: 36%;
+}
+
+.device-card-status{
+    // display: flex;
+    height: 36%;
+}
+
+.device-card-status-text{
+    text-align: left;
+    margin-left: 1%;
+}
+
+.device-card-text{
+    text-align: center;
+    margin-top: 8%;
+}
+
+.device-card-input{
+    border: 2px solid #321fdb;
+}
+
+.device-card-value-input{
+    height: 36%;
+    display: flex;
+    gap: 5%;
+}
+
+.device-card-button{
+    float: right;
+    display: flex;
+    gap: 5%;
+    margin-top: 2%;
+}
+
+.icon-trash-can{
+    color: red;
+}

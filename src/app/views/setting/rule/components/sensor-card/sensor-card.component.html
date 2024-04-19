@@ -1,0 +1,48 @@
+<div class="row device-card-name">
+    <div class="col-10">
+        <span>{{sensorName}}</span>
+    </div>
+    <div class="col-2" style="margin-top: 2%;">
+        <c-form-check inline>
+            <input class="device-card-input" cFormCheckInput id="inline6" type="checkbox"
+                [(ngModel)]="useCheckboxIsChecked" (ngModelChange)="onCheckboxChange()" />
+        </c-form-check>
+    </div>
+</div>
+<div class="row device-card-avatar">
+    <div class="col-4">
+        <img src="../../../../../assets/img/logo/MU.png" style="width: 90%; height: 80%;" alt="">
+    </div>
+    <div class="col-8 device-card-text">
+        <select class="form-select" [(ngModel)]="selectedType" [disabled]="!useCheckboxIsChecked">
+            <option *ngFor="let key of sensorCurrentKeys" [ngValue]="key">{{key}}</option>
+        </select>
+    </div>
+    <div class="row device-card-value-input pr-0">
+        <div class="col-5">
+            <input cFormControl style="width: 100%;" placeholder="Min" type="number" [disabled]="!useCheckboxIsChecked"
+                [(ngModel)]="inputMin" (ngModelChange)="setSensorFormComtrolValue()" />
+        </div>
+        <div class="col-5">
+            <input cFormControl style="width: 100%;" placeholder="Max" type="number" [disabled]="!useCheckboxIsChecked"
+                [(ngModel)]="inputMax" (ngModelChange)="setSensorFormComtrolValue()" />
+        </div>
+        <div class="col-2" style="display: flex; align-items: center;">
+            <button cButton color="primary" type="button" style="font-size: 8px;" (click)="setValue(selectedType,inputMin,inputMax)" [disabled]="!useCheckboxIsChecked">Thêm</button>
+        </div>
+    </div>
+
+    <div class="device-card-attributes-container mt-3">
+        <div class="attribute-item" *ngFor="let value of sensorValue; let i = index">
+            <div class="text-center">
+                <img src="../../../../../assets/img/logo/MU.png" alt="" class="attribute-item-icon">
+            </div>
+            <div class="text-center">{{value.type}}</div>
+            <strong>Min :</strong>
+            <div class="text-center">{{value.min}}</div>
+            <strong>Max :</strong>
+            <div class="text-center">{{value.max}}</div>
+        </div>
+    </div>
+</div>
+<app-show-alerts></app-show-alerts>

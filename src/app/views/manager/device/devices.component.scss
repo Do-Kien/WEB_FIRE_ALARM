@@ -1,0 +1,38 @@
+.card-header-option{
+    display: flex; 
+    gap: 5%; 
+    margin: 2% -2%;
+}
+
+span{
+    margin-top: 1.5%;
+    color: #6c757d;
+}
+
+.icon-trash-can{
+    color: red;
+}
+
+.icon-pen-to-square{
+    color: blue;
+}
+
+.relay__add__image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+}
+
+.relay__add__image-gallery__image-container {
+    cursor: pointer;
+}
+
+.relay__add__image-gallery__image-container--selected {
+    box-shadow: 1px 1px 3px 0px rgb(62, 240, 43);
+    border-radius: 5px;
+    background-color: rgb(241, 254, 241);
+}
+
+.relay__add__image-gallery__image-container img {
+    width: 100px;
+}

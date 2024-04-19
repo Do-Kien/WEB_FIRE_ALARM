@@ -1,0 +1,138 @@
+<div class="card border-top-primary border-top-3 mb-3" style="max-width: 82rem;">
+    <div class="card-header">
+        <h5>Danh sách Nhà kính</h5>
+        <div class="row my-4 gx-5">
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="gap: 5%; display: flex;">
+                <button type="button" class="btn btn-outline-primary" style="min-width: 5%;"
+                    [cModalToggle]="addFarmModal.id" (click)="resetFormFarm()">Thêm mới</button>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên nhà kính</th>
+                <th scope="col">Mô tả</th>
+                <th scope="col">Số lượng tủ điều khiển</th>
+                <th scope="col">Thời gian tạo</th>
+                <th scope="col">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let farm of farms; let i=index">
+                <th scope="row">{{i + 1}}</th>
+                <td>{{farm.name}}</td>
+                <td>{{farm.description}}</td> 
+                <td *ngIf="farm.numberOfGreenhouse == 0" style="color: red;">Chưa có tủ điều khiển</td>
+                <td *ngIf="farm.numberOfGreenhouse != 0">{{farm.numberOfGreenhouse}} tủ điều khiển</td>
+                <td>{{farm.createdAt | date: 'dd - MM - yyyy'}}</td>
+                <td>
+                  <a class="mr-2"><i class="fa-solid fa-pen-to-square icon-pen-to-square" cTooltip="Sửa" cTooltipPlacement="top"
+                      [cModalToggle]="editFarmModal.id" (click)="getEditIdFarm(farm.id, farm.name, farm.description, farm.numberOfGreenhouse)"></i>
+                  </a>/
+                  <a class="ml-2"><i class="fa-solid fa-trash-can icon-trash-can" cTooltip="Xóa" cTooltipPlacement="top"
+                      [cModalToggle]="deleteFarmModal.id" (click)="getDeleteIdFarm(farm.id, farm.numberOfGreenhouse)"></i>
+                  </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal add farm -->
+<c-modal #addFarmModal backdrop="static" id="addFarmModal" alignment="center">
+    <c-modal-header>
+        <h5 cModalTitle>Thêm mới nhà kính</h5>
+        <button [cModalToggle]="addFarmModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <form cForm [formGroup]="formFarm">
+            <div class="mb-3">
+                <label cLabel>Tên nhà kính</label>
+                <input cFormControl formControlName="farmName" placeholder="Nhập Tên nhà kính" type="text" />
+                <div class="alert-text">
+                    <small *ngIf="formFarm.get('farmName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label cLabel>Mô tả nhà kính</label>
+                <input cFormControl formControlName="farmDescription" placeholder="Nhập mô tả nhà kính" type="text" />
+                <div class="alert-text">
+                    <small *ngIf="formFarm.get('farmDescription')?.errors?.['maxlength']">Tối đa 50 kí tự *</small>
+                </div>
+            </div>
+        </form>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="addFarmModal.id" cButton color="secondary">Hủy bỏ</button>
+        <button [cModalToggle]="addFarmModal.id" cButton color="primary" (click)="addFarm()" [disabled]="!formFarm.valid">Thêm mới</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Modal edit farm -->
+<c-modal #editFarmModal backdrop="static" id="editFarmModal" alignment="center" size="xl">
+    <c-modal-header>
+        <h5 cModalTitle>Cập nhật nhà kính</h5>
+        <button [cModalToggle]="editFarmModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <form cForm [formGroup]="formFarm">
+            <div class="mb-3">
+                <label cLabel>Tên nhà kính</label>
+                <input cFormControl formControlName="farmName" placeholder="Nhập Tên nhà kính" type="text" />
+                <div class="alert-text">
+                    <small *ngIf="formFarm.get('farmName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label cLabel>Mô tả nhà kính</label>
+                <input cFormControl formControlName="farmDescription" placeholder="Nhập mô tả nhà kính" type="text" />
+                <div class="alert-text">
+                    <small *ngIf="formFarm.get('farmDescription')?.errors?.['maxlength']">Tối đa 50 kí tự *</small>
+                </div>
+            </div>
+        </form>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tủ điều khiển</th>
+                    <th scope="col">MAC</th>
+                    <th scope="col">Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let greenhouse of greenhouses; let i=index">
+                    <th scope="row">{{i + 1}}</th>
+                    <td>{{greenhouse.name}}</td>
+                    <td>{{greenhouse.mac}}</td>
+                    <td *ngIf="greenhouse.active == true" style="color: green;">Đang hoạt động</td>
+                    <td *ngIf="greenhouse.active == false" style="color: red;">Ngưng hoạt động</td>
+                </tr>
+            </tbody>
+        </table>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="editFarmModal.id" cButton color="secondary">Hủy bỏ</button>
+        <button cButton [cModalToggle]="editFarmModal.id" color="primary" (click)="editFarm()" [disabled]="!formFarm.valid">Cập nhật</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Modal delete farm -->
+<c-modal #deleteFarmModal backdrop="static" id="deleteFarmModal" alignment="center">
+    <c-modal-header>
+        <h5 cModalTitle>Xóa nhà kính</h5>
+        <button [cModalToggle]="deleteFarmModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        Bạn có chắc chắn muốn xóa Nhà kính này không ?
+        Dữ liệu không thể khôi phục được sau khi xóa .
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="deleteFarmModal.id" cButton color="secondary">Hủy bỏ</button>
+        <button cButton [cModalToggle]="deleteFarmModal.id" color="danger" (click)="deleteFarm()">Xác nhận</button>
+    </c-modal-footer>
+</c-modal>
+
+<app-show-alerts></app-show-alerts>

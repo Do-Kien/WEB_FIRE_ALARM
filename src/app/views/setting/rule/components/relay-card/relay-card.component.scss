@@ -1,0 +1,37 @@
+
+
+.device-card-name{
+    margin-top: 2%;
+    display: flex;
+    height: 20%;
+}
+
+.device-card-avatar{
+    display: flex;
+    height: 36%;
+}
+
+.device-card-status{
+    // display: flex;
+    height: 36%;
+}
+
+.device-card-status-text{
+    text-align: left;
+    margin-left: 1%;
+}
+
+.device-card-text{
+    text-align: center;
+    margin-top: 8%;
+}
+
+.device-card-input{
+    border: 2px solid #321fdb;
+}
+
+.device-card-value-input{
+    height: 36%;
+    display: flex;
+    gap: 5%;
+}

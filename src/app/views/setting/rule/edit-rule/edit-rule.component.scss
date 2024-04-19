@@ -1,0 +1,43 @@
+.flex {
+    display: flex;
+}
+
+.container-rule-device {
+    max-width: 82rem;
+    margin: 0;
+    gap: 4%;
+}
+
+.container-rule-device-card {
+    height: 26rem;
+    margin: 0;
+    background: #fff;
+    width: 48%;
+    gap: 3%;
+    overflow: scroll;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.device-card-button {
+    float: right;
+    display: flex;
+    gap: 5%;
+}
+
+.sensor-card,
+.device-card {
+    height: fit-content;
+    padding-bottom: 1rem;
+    margin-left: 0px;
+    margin-top: 1%;
+    border: 1px solid#321fdb;
+}
+
+.ble-card {
+    margin-left: 0px;
+    margin-top: 1%;
+    height: fit-content;
+    border: 1px solid #321fdb;
+    padding-bottom: 1rem;
+}

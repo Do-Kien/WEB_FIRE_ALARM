@@ -1,0 +1,52 @@
+<div class="device-card-name">
+    <div class="col-10">
+        <span>{{relayName}}</span>
+    </div>
+    <div class="col-2" style="margin-top: 2%;">
+        <c-form-check inline sizing="lg">
+            <input class="device-card-input" cFormCheckInput type="checkbox" 
+            [(ngModel)]="useCheckboxIsChecked" (change)="onCheckboxChange()" 
+            (ngModelChange)="setRelayFormComtrolValue()"
+            />
+        </c-form-check>
+    </div>
+</div>
+<div class="row device-card-status">
+    <div class="row col-12 device-card-status-text">
+        <span class="col-8 col-md-8 col-lg-8">Trạng thái: </span>
+        <c-form-check [switch]="true" class="col-4 col-md-4 col-lg-4">
+            <input cFormCheckInput check type="checkbox" class="statusCheckbox" [disabled]="!useCheckboxIsChecked"
+                (change)="onCheckboxChange()" [(ngModel)]="relayStatus" (ngModelChange)="setRelayFormComtrolValue()"
+            />
+        </c-form-check>
+    </div>
+    <div class="row col-12 device-card-status-text">
+        <span class="col-9 col-md-8 col-lg-8">Tùy chọn: </span>
+        <c-form-check class="col-3 col-md-4 col-lg-4">
+            <input cFormCheckInput type="checkbox" [(ngModel)]="optionCheckboxIsChecked"
+            [disabled]="!(useCheckboxIsChecked && relayStatus)" (change)="onCheckboxChange()" 
+            (ngModelChange)="setRelayFormComtrolValue()"
+            />
+        </c-form-check>
+    </div>
+</div>
+<div class="device-card-value-input">
+    <div class="row">
+        <span class="col-12 col-md-10 col-lg-10">Độ trễ</span>
+        <form cForm>
+            <input cFormControl style="width: 100%;" placeholder="Min" type="number" 
+            [disabled]="!(useCheckboxIsChecked && relayStatus && optionCheckboxIsChecked)"
+            (ngModelChange)="setRelayFormComtrolValue()"
+            />
+        </form>
+    </div>
+    <div class="row">
+        <span class="col-12 col-md-10 col-lg-10">Thời gian</span>
+        <form cForm>
+            <input cFormControl style="width: 100%;" placeholder="Min" type="number" 
+            [disabled]="!(useCheckboxIsChecked && relayStatus && optionCheckboxIsChecked)"
+            (ngModelChange)="setRelayFormComtrolValue()"
+            />
+        </form>
+    </div>
+</div>

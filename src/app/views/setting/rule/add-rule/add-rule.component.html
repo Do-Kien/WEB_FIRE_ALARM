@@ -1,0 +1,140 @@
+<div class="card border-top-primary border-top-3 mb-4" style="max-width: 82rem;">
+    <div class="row card-header" style="gap:10%; margin: 0;">
+        <div class="mb-3 col-12 col-md-12 col-lg-5">
+            <div class="mb-3 flex">
+                <span class="col-6">Tên luật điều khiển</span>
+                <form cForm [formGroup]="formRule">
+                    <input cFormControl formControlName="ruleName" style="width: 100%;" placeholder="Nhập tên luật"
+                        type="text" />
+                </form>
+            </div>
+            <div class="mb-3 flex">
+                <span class="col-0 col-md-6 col-lg-6">Tủ điều khiển</span>
+                <select class="form-select" [(ngModel)]="selectedGreenhouse"
+                    (ngModelChange)="setFormRuleValue();resetList()">
+                    <option *ngFor="let option of optionGreenhouse" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="mb-3 flex">
+                <span class="col-6">Khu vực</span>
+                <select class="form-select" [(ngModel)]="selectedZone"
+                    (ngModelChange)="setFormRuleValue();resetList()">
+                    <option *ngFor="let option of optionZoneAll" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="mb-3 flex">
+                <span class="col-6">Lặp lại</span>
+                <div class="col-6 p-0">
+                    <ng-multiselect-dropdown [placeholder]="'Chọn lặp lại'" [settings]="dropdownSettings" [data]="dropdownListDay"
+                        [(ngModel)]="selectedDayItems" (ngModelChange)="setFormRuleValue()" >
+                    </ng-multiselect-dropdown>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mb-3 col-12 col-md-12 col-lg-5">
+            <div class="row">
+                <div class="mb-3 col-10 col-md-12 col-lg-6 flex">
+                    <span class="col-6">Điều kiện</span>
+                    <select class="form-select col-7" [(ngModel)]="selectedCondition"
+                        (ngModelChange)="setFormRuleValue()">
+                        <option *ngFor="let option of conditionOptions" [ngValue]="option">{{option}}</option>
+                    </select>
+                </div>
+                <div class="mb-3 col-10 col-md-12 col-lg-6 flex">
+                    <span class="col-6">Thời gian</span>
+                    <c-form-check class="col-6">
+                        <input cFormCheckInput type="checkbox" [(ngModel)]="timeCheckboxIsChecked" />
+                    </c-form-check>
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-10 col-md-12 col-lg-6 flex">
+                    <span class="col-6">Bắt đầu</span>
+                    <input cFormControl class="col-7" type="time" [disabled]="!timeCheckboxIsChecked"
+                        [(ngModel)]="timeStart" (ngModelChange)="setFormRuleValue()" />
+                </div>
+                <div class="mb-3 col-10 col-md-12 col-lg-6 flex">
+                    <span class="col-6">Kết thúc</span>
+                    <input cFormControl class="col-7" type="time" [disabled]="!timeCheckboxIsChecked"
+                        [(ngModel)]="timeStop" (ngModelChange)="setFormRuleValue()" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-10 col-md-12 col-lg-6 flex">
+                    <span class="col-6">Loại luật</span>
+                    <select class="form-select col-7">
+                        <option>Luật không tuần tự</option>
+                        <option>Luật tuần tự</option>
+                    </select>
+                </div>
+                <div class="mb-3 col-10 col-md-12 col-lg-6 flex">
+                    <span class="col-6">Cập nhật</span>
+                    <input cFormControl class="col-7" type="number" placeholder="phút" [(ngModel)]="timeUpdate" (ngModelChange)="setFormRuleValue()"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-10 col-md-12 col-lg-6 flex">
+                    <span class="col-6">Đầu ra</span>
+                    <select class="form-select col-7" [(ngModel)]="selectedTypeDevice"
+                        (ngModelChange)="setFormRuleValue()">
+                        <option *ngFor="let typeDevice of typeDeviceOptions" [value]="typeDevice">{{typeDevice}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3 container-rule-device">
+
+    <div class="row col-12 col-md-12 col-lg-6 container-rule-device-card">
+
+        <div class="row card col-12 col-md-12 col-lg-6 sensor-card"
+            *ngFor="let sensor of SensorList | filterSensor : selectedGreenhouse : selectedZone">
+            <app-sensor-card [sensorName]="sensor.name" [sensorId]="sensor.id" [sensorMac]="sensor.mac"
+                [sensorType]="sensor.type" [sensorCurrentValue]="sensor.currentValue"
+                [sensorGreenhouseId]="sensor.greenhouseId" [sensorZoneId]="sensor.zoneId" 
+                [sensorMin] = "sensor.min" [sensorMax] = "sensor.max"
+                [selectedGreenhouse]="selectedGreenhouse" [selectedZone]="selectedZone"
+                (useSensor)="getUseSensor($event)" (notUseSensor)="removeUseSensor($event)"
+                >
+            </app-sensor-card>
+        </div>
+    </div>
+
+    <div class="row col-12 col-md-12 col-lg-6 container-rule-device-card">
+        <ng-container *ngIf="selectedTypeDevice == typeDeviceOptions[0]">
+            <div class="row card col-12 col-md-12 col-lg-6 device-card"
+                *ngFor="let device of DeviceList | filterDevice : selectedGreenhouse : selectedZone">
+                <app-relay-card [relayName]="device.name" [relayPin]="device.pin"
+                    [relayGreenhouseId]="device.greenhouseId" [relayZoneId]="device.zoneId"
+                    [selectedGreenhouse]="selectedGreenhouse" [selectedZone]="selectedZone"
+                    (useRelay)="getUseRelay($event)" (notUseRelay)="removeUseRelay($event)">
+                </app-relay-card>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedTypeDevice == typeDeviceOptions[1]">
+            <div class="row card col-12 col-md-12 col-lg-6 ble-card" *ngFor="let device of DeviceList">
+                <app-dimming-card></app-dimming-card>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedTypeDevice == typeDeviceOptions[2]">
+            <div class="row card col-12 col-md-12 col-lg-6 ble-card" *ngFor="let device of DeviceList">
+                <app-ble-card></app-ble-card>
+            </div>
+        </ng-container>
+    </div>
+</div>
+
+<div class="device-card-button mb-3 col-3">
+    <button cButton color="secondary" routerLink="../">Hủy bỏ</button>
+    <form cForm [formGroup]="formRule" (ngSubmit)="onAddRuleSubmit()">
+        <button cButton color="primary" type="submit">Thêm mới</button>
+    </form>
+</div>

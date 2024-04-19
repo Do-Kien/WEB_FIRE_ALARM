@@ -1,0 +1,168 @@
+<div class="card border-top-primary border-top-3 mb-3" style="max-width: 82rem;">
+
+    <div class="card-header">
+        <h5>Danh sách khu vực điều khiển</h5>
+        <div class="row my-4 gx-5">
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+                <span class="col-4">Tủ điều khiển</span>
+                <select class="form-select col-8" [(ngModel)]="selectedOptionGreenhouse">
+                    <option *ngFor="let option of optionGreenhouseAll" [ngValue]="option">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+                <span class="col-4">Khu vực</span>
+                <app-filter-form (filterTextChanged)="getFilterText($event)" [filterText]="filterText"></app-filter-form>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="gap: 5%; display: flex;">
+                <button type="button" class="btn btn-outline-info" style="min-width: 5%;" (click)="filterOption()">Tìm kiếm</button>
+                <button type="button" class="btn btn-outline-primary" style="min-width: 5%;"
+                    [cModalToggle]="addZoneModal.id" (click)="resetFormZone()" [disabled]="!buttonAddNew">Thêm mới</button>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên khu vực</th>
+                <th scope="col">Số lượng thiết bị</th>
+                <th scope="col">Thời gian tạo</th>
+                <th scope="col">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let zone of zones; let i=index">
+                <th scope="row">{{i + 1}}</th>
+                <td>{{zone.name}}</td>
+                <td *ngIf="zone.numberOfDevice == 0" style="color: red;">Chưa có thiết bị</td>
+                <td *ngIf="zone.numberOfDevice != 0">{{zone.numberOfDevice}} thiết bị</td>
+                <td>{{zone.createdAt | date: 'dd - MM - yyyy'}}</td>
+                <td>
+                    <a class="mr-2"><i class="fa-solid fa-pen-to-square icon-pen-to-square" cTooltip="Sửa"
+                            cTooltipPlacement="top" [cModalToggle]="editZoneModal.id"
+                            (click)="getEditIdZone(zone.id, zone.name, zone.description, zone.listDevice, zone.listSensor)"></i>
+                    </a>/
+                    <a class="ml-2"><i class="fa-solid fa-trash-can icon-trash-can" cTooltip="Xóa"
+                            cTooltipPlacement="top" [cModalToggle]="deleteZoneModal.id"
+                            (click)="getDeleteIdZone(zone.id)"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal add zone -->
+<c-modal #addZoneModal backdrop="static" id="addZoneModal" alignment="center">
+    <c-modal-header>
+        <h5 cModalTitle>Thêm mới khu vực điều khiển</h5>
+        <button [cModalToggle]="addZoneModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <form cForm [formGroup]="formZone">
+            <div class="mb-3">
+                <label cLabel>Tên khu vực</label>
+                <input cFormControl formControlName="zoneName" placeholder="Nhập Tên khu vực" type="text" />
+                <div class="alert-text">
+                    <small *ngIf="formZone.get('zoneName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                    <small *ngIf="formZone.get('zoneName')?.errors?.['minlength']">Tối thiểu 5 kí tự *</small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label cLabel>Tủ điều khiển</label>
+                <select class="form-select" formControlName="greenhouse" [(ngModel)]="greenhouseSelected"
+                    (ngModelChange)="onSelectedGreenhouseChange($event)">
+                    <option *ngFor="let option of optionGreenhouse" [ngValue]="option">{{option.name}}</option>
+                </select>
+                <div class="alert-text">
+                    <small *ngIf="formZone.get('greenhouse')?.errors?.['undefined']">Chưa có tủ điều khiển *</small>
+                </div>
+            </div>
+        </form>
+        <form cForm [formGroup]="formZoneDetails">
+
+        </form>
+        
+        <div class="mb-3">
+            <label cLabel>Lựa chọn cảm biến</label>
+            <ng-multiselect-dropdown [placeholder]="'Chọn cảm biến'" [settings]="dropdownSettings" [data]="dropdownListSensor"
+            [(ngModel)]="selectedSensorItems">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="mb-3">
+            <label cLabel>Lựa chọn thiết bị</label>
+            <ng-multiselect-dropdown [placeholder]="'Chọn thiết bị'" [settings]="dropdownSettings" [data]="dropdownListDevice"
+            [(ngModel)]="selectedDeviceItems">
+          </ng-multiselect-dropdown>
+        </div>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="addZoneModal.id" cButton color="secondary">Hủy bỏ</button>
+        <button cButton [cModalToggle]="addZoneModal.id" color="primary" (click)="addZone()" [disabled]="!formZone.valid">Thêm mới</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Modal edit zone -->
+<c-modal #editZoneModal backdrop="static" id="editZoneModal" alignment="center">
+    <c-modal-header>
+        <h5 cModalTitle>Cập nhật khu vực điều khiển</h5>
+        <button [cModalToggle]="editZoneModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <form cForm [formGroup]="formZone">
+            <div class="mb-3">
+                <label cLabel>Tên khu vực</label>
+                <input cFormControl formControlName="zoneName" placeholder="Nhập Tên khu vực" type="text" />
+                <div class="alert-text">
+                    <small *ngIf="formZone.get('zoneName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                    <small *ngIf="formZone.get('zoneName')?.errors?.['minlength']">Tối thiểu 5 kí tự *</small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label cLabel>Tủ điều khiển</label>
+                <select class="form-select" formControlName="greenhouse" [(ngModel)]="greenhouseSelected"
+                    (ngModelChange)="onSelectedGreenhouseChange($event)">
+                    <option *ngFor="let option of optionGreenhouse" [ngValue]="option">{{option.name}}</option>
+                </select>
+                <div class="alert-text">
+                    <small *ngIf="formZone.get('greenhouse')?.errors?.['undefined']">Chưa có tủ điều khiển *</small>
+                </div>
+            </div>
+        </form>
+        <div class="mb-3">
+            <label cLabel>Lựa chọn cảm biến</label>
+            <ng-multiselect-dropdown [placeholder]="'Chọn cảm biến'" [settings]="dropdownSettings" [data]="dropdownListSensor"
+            [(ngModel)]="selectedSensorItems">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="mb-3">
+            <label cLabel>Lựa chọn thiết bị</label>
+            <ng-multiselect-dropdown [placeholder]="'Chọn thiết bị'" [settings]="dropdownSettings" [data]="dropdownListDevice"
+            [(ngModel)]="selectedDeviceItems">
+          </ng-multiselect-dropdown>
+        </div>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="editZoneModal.id" cButton color="secondary">Hủy bỏ</button>
+        <button cButton [cModalToggle]="editZoneModal.id" color="primary" (click)="editZone()" [disabled]="!formZone.valid">Cập nhật</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Modal delete device -->
+<c-modal #deleteZoneModal backdrop="static" id="deleteZoneModal" alignment="center">
+    <c-modal-header>
+        <h5 cModalTitle>Xóa khu vực điều khiển</h5>
+        <button [cModalToggle]="deleteZoneModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        Bạn có chắc chắn muốn xóa Khu vực này không ?
+        Dữ liệu không thể khôi phục được sau khi xóa .
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="deleteZoneModal.id" cButton color="secondary">Hủy bỏ</button>
+        <button cButton [cModalToggle]="deleteZoneModal.id" color="danger" (click)="deleteZone()">Xác nhận</button>
+    </c-modal-footer>
+</c-modal>
+
+<app-show-alerts></app-show-alerts>

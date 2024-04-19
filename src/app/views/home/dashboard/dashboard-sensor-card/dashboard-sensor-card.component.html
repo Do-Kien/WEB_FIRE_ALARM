@@ -1,0 +1,138 @@
+<div class="row mb-3 container-list-sensor">
+    <div class="col-6 mb-3" *ngFor="let sensor of sensors; let i=index">
+                            
+        <div class="row col-12 card sensor-card">
+            <div class="row mb-2 mt-2 col-12 pl-2 sensor-card-name">
+                <span *ngIf="sensor.isConfig == false" class="col-9 p-0" style="font-size: 15px; color: blue;">{{sensor.name}}</span>
+                <span *ngIf="sensor.isConfig == true && sensor.active == true" class="col-9 p-0" style="font-size: 15px; color: black;">{{sensor.name}}</span>
+                <span *ngIf="sensor.isConfig == true && sensor.active == false" class="col-9 p-0" style="font-size: 15px; color: red;">{{sensor.name}}</span>
+            </div>
+            <div class="row mb-1 col-12 pr-0">
+                <div class="col-8 pr-0">
+                    <div class="row row-0 mb-2 col-12">
+                        <i class="fa-solid fa-clock-rotate-left" style="padding: 0; color: #4682b4;"></i>
+                        <span class="col-6 sensor-card-schedule">{{sensor.timeUpdate}} phút/ lần</span>
+                    </div>  
+                    <div class="row row-0 mb-2 col-12">
+                        <i class="fa-solid fa-clock" style="padding: 0; color: #6495ED;"></i>
+                        <span class="col-6 sensor-card-schedule">{{sensor.updatedAt | date: 'HH:mm:ss'}}</span>
+                    </div>  
+                    <div class="row row-0 mb-2 col-12">
+                        <i class="fa-regular fa-calendar-days" style="padding: 0; color: #1E90FF;"></i>
+                        <span class="col-6 sensor-card-schedule">{{sensor.updatedAt | date: 'dd/MM/yyyy'}}</span>
+                    </div>  
+                    <div class="row row-0 mb-2 col-12">
+                        <i class="fa-solid fa-download" style="padding: 0; color: blue;"></i>
+                        <span class="col-6 sensor-card-schedule">Tải dữ liệu</span>
+                    </div>  
+                </div>
+    
+                <div class="col-4 p-0 mb-2" style="text-align: center;">
+                    <img *ngIf="sensor.type == 0" src="../../../../../assets/icon/icon TT22 (13).png" style="width: 100%; height: 76%;" alt="">
+                    <img *ngIf="sensor.type == 2" src="../../../../../assets/icon/icon TT22 (8).png" style="width: 100%; height: 76%;" alt="">
+                    <img *ngIf="sensor.type == 3" src="../../../../../assets/icon/icon TT22 (12).png" style="width: 100%; height: 76%;" alt="">
+                    <img *ngIf="sensor.type == 4" src="../../../../../assets/icon/icon TT22 (18).png" style="width: 100%; height: 76%;" alt="">
+                    <img *ngIf="sensor.type == 5" src="../../../../../assets/icon/icon TT22 (20).png" style="width: 100%; height: 76%;" alt="">
+                    <img *ngIf="sensor.type == 6" src="../../../../../assets/icon/icon TT22 (17).png" style="width: 100%; height: 76%;" alt="">
+                    <div class="row col-12 p-0 ml-1 mt-1">
+                        <span class="col-8 sensor-card-battery-text">{{sensor.battery}} %</span>
+                        <i class="col-4 fa-solid fa-battery-full sensor-card-battery"></i>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="sensor.type == 0" class="row mb-2 col-12 pr-0">
+                <div class="col-6 pr-0">
+                    <div class="col-12 px-0 temp-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-temperature-low icon-value-card"></i>
+                            <span class="mb-4 col-12" style="text-align: center;">{{sensor.currentValue.temp}} °C</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-6 pr-0">
+                    <div class="col-12 px-0 humi-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-droplet icon-value-card"></i>
+                            <span class="mb-4 col-12" style="text-align: center;">{{sensor.currentValue.hum}} %</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="sensor.type == 2" class="row mb-2 col-12 pr-0">
+                <div class="col-6 pr-0">
+                    <div class="col-12 px-0 humi-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-droplet icon-value-card"></i>
+                            <span class="mb-4 col-12" style="text-align: center;">{{sensor.currentValue.mois}} %</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="sensor.type == 3" class="row mb-2 col-12 pr-0">
+                <div class="col-6 pr-0">
+                    <div class="col-12 px-0 lux-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-sun icon-value-card"></i>
+                            <span class="mb-4 col-12" style="text-align: center;">{{sensor.currentValue.lux}} lux</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="sensor.type == 4" class="row mb-2 col-12 pr-0">
+                <div class="col-6 pr-0">
+                    <div class="col-12 px-0 co2-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-cloud icon-value-card"></i>
+                            <span class="mb-4 col-12" style="text-align: center;">{{sensor.currentValue.co2}} ppm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="sensor.type == 5" class="row mb-2 col-12 pr-0">
+                <div class="col-4 pr-0">
+                    <div class="col-12 px-0 humi-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-droplet icon-value-card"></i>
+                            <span class="mb-0 col-12" style="text-align: center;">{{sensor.currentValue.ec}}</span>
+                            <span class="mb-1 col-12" style="text-align: center; font-size: 14px;">us/cm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4 pr-0">
+                    <div class="col-12 px-0 temp-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-temperature-low icon-value-card"></i>
+                            <span class="mb-4 col-12" style="text-align: center;">{{sensor.currentValue.temp}} °C</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-4 pr-0">
+                    <div class="col-12 px-0 humi-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-droplet icon-value-card"></i>
+                            <span class="mb-4 col-12" style="text-align: center;">{{sensor.currentValue.mois}} %</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="sensor.type == 6" class="row mb-2 col-12 pr-0">
+                <div class="col-6 pr-0">
+                    <div class="col-12 px-0 lux-value-card">
+                        <div class="row">
+                            <i class="mb-1 ml-2 mt-2 col-12 fa-solid fa-cloud icon-value-card"></i>
+                            <span class="mb-4 col-12" style="text-align: center;">{{sensor.currentValue.ph}} pH</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

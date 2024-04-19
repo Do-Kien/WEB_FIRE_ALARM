@@ -1,0 +1,287 @@
+<div class="card border-top-primary border-top-3 mb-3" style="max-width: 82rem;">
+
+    <div class="card-header">
+        <h5>Danh sách điều khiển</h5>
+        <div class="row my-4 gx-5">
+            <div class="col-12 col-md-12 col-lg-6 mb-4" style="display: flex;">
+                <span class="col-4">Tủ điều khiển</span>
+                <select class="form-select col-8" [(ngModel)]="filterGreenhouse" 
+                (ngModelChange)="onSelectedGreenhouseChange($event)">
+                    <option *ngFor="let option of optionGreenhouse" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-12 col-lg-6 mb-4" style="display: flex;">
+                <span class="col-4">Khu vực</span>
+                <select class="form-select col-8" [(ngModel)]="filterZoneAll" 
+                (ngModelChange)="onSelectedZoneChange($event)">
+                    <option *ngFor="let option of optionZoneAll" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-12 col-lg-6 mb-4" style="display: flex;">
+                <span class="col-4">Loại điều khiển</span>
+                <select class="form-select col-8" [(ngModel)]="selectedControl" (ngModelChange)="selectControl()">
+                    <option *ngFor="let option of optionControl" [ngValue]="option.value">{{option.viewValue}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-12 col-lg-6 mb-4" style="display: flex;">
+                <span class="col-4">Chế độ</span>
+                <c-button-group class="col-8 px-0" [formGroup]="btnRadioGroup2">
+                    <input class="btn-check" formControlName="radio2" id="radio1-grp2" type="radio" value="Radio1" />
+                    <label (click)="setRadioValue('Radio1')" cButton cFormCheckLabel color="danger" for="radio1-grp2"
+                        variant="outline" active="true">
+                        Thủ công
+                    </label>
+
+                    <input class="btn-check" formControlName="radio2" id="radio2-grp2" type="radio" value="Radio2" />
+                    <label (click)="setRadioValue('Radio2')" cButton cFormCheckLabel color="success" for="radio2-grp2"
+                        variant="outline">
+                        Chạy lịch
+                    </label>
+                    <input class="btn-check" formControlName="radio2" id="radio3-grp2" type="radio" value="Radio3" />
+                    <label (click)="setRadioValue('Radio3')" cButton cFormCheckLabel color="info" for="radio3-grp2"
+                        variant="outline">
+                        Chạy luật
+                    </label>
+                </c-button-group>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dieu khien thiet bi -->
+<div class="container px-0 mb-3" [style]="displayDevices">
+    <div class="row gx-4">
+        <div class="col-12 col-md-12 col-lg-6 mb-3">
+            <div class="p-3 border container-control-device-card">
+                <div class="mb-3">
+                    <span>Thiết bị 1</span>
+                </div>
+                <div class="px-0">
+                    <div class="row gx-5 gy-4 mx-1" >
+                        <div class="px-3 col-12 col-md-6 col-lg-6" *ngFor="let device of devices; let i=index">
+                            <div class="card col device-card">
+                                <div class="mb-3 mt-2">
+                                    <div class="col-10">
+                                        <h6>{{device.name}}</h6>
+                                    </div>
+                                </div>
+                                <div class="row gx-5 mb-2">
+                                    <div class="col-5 mb-3">
+                                        <img src="../../../../../assets/icon/{{device.avatar}}"
+                                            style="width: 100%; height: 100%;" alt="">
+                                    </div>
+                                    <div class="col-7 px-0 device-card-text">
+                                        <div class="row px-0 gx-4 col-12">
+                                            <h6 class="col-5 px-0">OFF</h6>
+                                            <c-form-check class="col-3" [switch]="true" style="margin-top: -2%;" *ngIf="device.active == true">
+                                                <input cFormCheckInput class="col-6 col-md-6 col-lg-12 px-3" checked 
+                                                type="checkbox" (click)="controlRelay(device.greenhouseId, device.pin, false)"/>
+                                            </c-form-check>
+                                            <c-form-check class="col-3" [switch]="true" style="margin-top: -2%;" *ngIf="device.active == false">
+                                                <input cFormCheckInput class="col-6 col-md-6 col-lg-12 px-3" 
+                                                type="checkbox" (click)="controlRelay(device.greenhouseId, device.pin, true)"/>
+                                            </c-form-check>
+                                            <h6 class="col-3 px-0">ON</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-3 mb-3">
+            <div class="p-3 border container-control-device-card">
+                <div class="mb-3">
+                    <span>Thiết bị 2</span>
+                </div>
+                <div class="px-0">
+                    <div class="row gx-5 gy-4 mx-1">
+                        <div class="px-0 col-12">
+                            <div class="px-0 card col device-card">
+                                <div class="mb-3 mt-2">
+                                    <div class="col-10">
+                                        <h6>Modbus 1</h6>
+                                    </div>
+                                </div>
+                                <div class="px-4 mb-2">
+                                    <div class="row gy-3 gx-4">
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline" active="true">ON</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">OFF</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">Revert</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">RUN</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">Stop</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">Revert</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">RUN</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">Stop</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-0 col-12">
+                            <div class="px-0 card col device-card">
+                                <div class="mb-3 mt-2">
+                                    <div class="col-10">
+                                        <h6>Modbus 1</h6>
+                                    </div>
+                                </div>
+                                <div class="px-4 mb-2">
+                                    <div class="row gy-3 gx-4">
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline" active="true">ON</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">OFF</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">Revert</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">RUN</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">Stop</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">Revert</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">RUN</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="col-12 " cButton color="primary"
+                                                variant="outline">Stop</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-12 col-lg-3 mb-3">
+            <div class="p-3 border container-control-device-card">
+                <div class="mb-3">
+                    <span>Đèn LED (BLE) - Chiết áp (0 - 10V)</span>
+                </div>
+                <div class="px-0 mb-4">
+                    <div class="row gx-5 gy-4 mx-1">
+                        <div class="px-0 col-12">
+                            <div class="px-0 card col device-card">
+                                <div class="mb-3 mt-2">
+                                    <div class="col-10">
+                                        <h6>LED</h6>
+                                    </div>
+                                </div>
+                                <div class="row gx-4 mb-1">
+                                    <div class="col-5 mb-1">
+                                        <img src="../../../../../assets/img/logo/MU.png"
+                                            style="width: 100%; height: 100%;" alt="">
+                                    </div>
+                                    <div class="col-7 px-0 device-card-text">
+                                        <div class="row px-0 gx-4 col-12">
+                                            <h6 class="col-5 px-0">OFF</h6>
+                                            <c-form-check class="col-3" [switch]="true" style="margin-top: -2%;">
+                                                <input cFormCheckInput class="col-6 col-md-6 col-lg-12 px-3" checked
+                                                    type="checkbox" />
+                                            </c-form-check>
+                                            <h6 class="col-3 px-0">ON</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row px-3">
+                                    <div class="col-12">
+                                        <label cLabel class="mb-0" for="customRange1">DIM -
+                                            <strong>{{value}}</strong></label>
+                                        <input [(ngModel)]="value" cFormControl id="customRange1" type="range" />
+                                    </div>
+                                    <div class="col-12">
+                                        <label cLabel class="mb-0" for="customRange1">CCT -
+                                            <strong>{{value}}</strong></label>
+                                        <input [(ngModel)]="value" cFormControl id="customRange1" type="range" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-0 mb-4">
+                    <div class="row gx-5 gy-4 mx-1">
+                        <div class="px-0 col-12">
+                            <div class="px-0 card col device-card">
+                                <div class="mb-3 mt-2">
+                                    <div class="col-10">
+                                        <h6>LED</h6>
+                                    </div>
+                                </div>
+                                <div class="row gx-4 mb-1">
+                                    <div class="col-5 mb-1">
+                                        <img src="../../../../../assets/img/logo/MU.png"
+                                            style="width: 100%; height: 100%;" alt="">
+                                    </div>
+                                    <div class="col-7 px-0">
+                                        <div class="row px-3 col-12" style="text-align: center;">
+                                            <label cLabel for="customRange1">DIM - <strong>{{value}}</strong></label>
+                                            <input [(ngModel)]="value" cFormControl id="customRange1" type="range" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dieu khien lich -->
+<div class="container px-0 mb-3" [style]="displaySchedules">
+    <app-schedule-container></app-schedule-container>
+</div>
+
+<!-- Dieu khien luat-->
+<div class="container px-0 mb-3" [style]="displayRules">
+    <app-rule-container></app-rule-container>
+</div>
+
+<!-- Dieu khien kich ban -->
+<div class="container px-0 mb-3" [style]="displayScripts">
+    <app-rule-container></app-rule-container>
+</div>
+
+<app-show-alerts></app-show-alerts>

@@ -1,0 +1,178 @@
+<div class="container">
+    <div class="container-dashboard col-12 px-0">
+        <div class="row gx-4">
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="mb-sm-0">
+                    <div class="p-3 container-dashboard-data style-1">
+                        <div class="d-flex justify-content-between align-items-center mb-sm-0 mb-2 ps-lg-0">                                                    
+                            <div style="flex:1; text-align: center;">
+                                <i class="fas fa-users fa-2xl text-white"></i>
+                            </div>
+                            <div style="flex:2; text-align: center;">
+                                <h3 class="font-w600 fs-2 mb-0 text-white">845</h3>
+                                <span class="fs-6 font-w500 text-white">Total Guest</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="mb-sm-0">
+                    <div class="p-3 container-dashboard-data style-2">
+                        <div class="d-flex justify-content-between align-items-center mb-sm-0 mb-2 ps-lg-0">                                                    
+                            <div style="flex:1; text-align: center;">
+                                <i class="fas fa-users fa-2xl text-white"></i>
+                            </div>
+                            <div style="flex:2; text-align: center;">
+                                <h3 class="font-w600 fs-2 mb-0 text-white">845</h3>
+                                <span class="fs-6 font-w500 text-white">Total Guest</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="mb-sm-0">
+                    <div class="p-3 container-dashboard-data style-3">
+                        <div class="d-flex justify-content-between align-items-center mb-sm-0 mb-2 ps-lg-0">                                                    
+                            <div style="flex:1; text-align: center;">
+                                <i class="fas fa-chart-line fa-2xl text-white"></i>
+                            </div>
+                            <div style="flex:2; text-align: center;">
+                                <h3 class="font-w600 fs-2 mb-0 text-white">845</h3>
+                                <span class="fs-6 font-w500 text-white">Total Guest</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-3">
+                <div class="mb-sm-0">
+                    <div class="p-3 container-dashboard-data style-4">
+                        <div class="d-flex justify-content-between align-items-center mb-sm-0 mb-2 ps-lg-0">                                                    
+                            <div style="flex:1; text-align: center;">
+                                <i class="fas fa-comments fa-2xl text-white"></i>
+                            </div>
+                            <div style="flex:2; text-align: center;">
+                                <h3 class="font-w600 fs-2 mb-0 text-white">845</h3>
+                                <span class="fs-6 font-w500 text-white">Total Guest</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-dashboard col-12 px-0">
+        <div class="row gx-4">
+            <div class="col-md-12 col-lg-9 mb-3">
+                <div class="container-dashboard-chart p-3">
+                    <div class="d-flex justify-content-between container-dashboard-chart-header">
+                        <div>
+                            <h6>Thông tin dữ liệu</h6>
+                            <p style="color: #7b7d81; font-size: 14px;">January - July 2023</p>
+                        </div>
+                        <div>
+                            <ul class="nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Month</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#">Weekly</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Day</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12 container-dashboard-chart-sensor">
+                        <apx-chart
+                        [series]="chartOptions.series"
+                        [chart]="chartOptions.chart"
+                        [xaxis]="chartOptions.xaxis"
+                        [stroke]="chartOptions.stroke"
+                        [tooltip]="chartOptions.tooltip"
+                        [dataLabels]="chartOptions.dataLabels"
+                      ></apx-chart>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-3 mb-3">
+                <div class="container-dashboard-chart p-3">
+                    <div>
+                        <apx-chart 
+                        [series]="chartOptionsSensor.series" 
+                        [colors]="chartOptionsSensor.plotOptions.pie.donut.value.colors" 
+                        [chart]="chartOptionsSensor.chart" 
+                        [labels]="chartOptionsSensor.labels"
+                        [title]="chartTitleSensor" 
+                        [dataLabels]="chartDataLabels" 
+                        [plotOptions]="chartOptionsSensor.plotOptions" 
+                        [responsive]="chartOptionsSensor.responsive"
+                        ></apx-chart>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="container-dashboard">
+        <div class="row gx-4">
+            <div class="col-md-12 col-lg-4 mb-3">
+                <div class="container-dashboard-info p-3">
+                    <div class="mb-3">
+                        <h6 style="padding-top: 1%;">Danh sách</h6>                        
+                    </div>
+                    <div>
+                        <apx-chart 
+                        [series]="chartColumn.series" 
+                        [chart]="chartColumn.chart" 
+                        [stroke]="chartColumn.stroke"
+                        [dataLabels]="chartColumn.dataLabels" 
+                        [plotOptions]="chartColumn.plotOptions" 
+                        [xaxis]="chartColumn.xaxis"
+                        [yaxis]="chartColumn.yaxis"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-4 mb-3">
+                <div class="container-dashboard-info container-dashboard-list-data p-3">
+                    <div class="mb-3">
+                        <h6 style="padding-top: 1%;">Danh sách</h6>                        
+                    </div>
+                    <table cTable class="table table-striped table-hover" small="">
+                        <thead cTableColor="light">
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Tên</th>
+                                <th scope="col">Trạng thái</th>
+                            </tr>   
+                        </thead>
+                        <tbody>                           
+                        </tbody>
+                    </table>   
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-4 mb-3">
+                <div class="container-dashboard-info p-3">
+                    <div>
+                        <apx-chart 
+                        [series]="chartLine.series" 
+                        [chart]="chartLine.chart" 
+                        [stroke]="chartLine.stroke"
+                        [title]="chartLine.title"
+                        [dataLabels]="chartLine.dataLabels" 
+                        [labels]="chartLine.labels" 
+                        [xaxis]="chartLine.xaxis"
+                        [yaxis]="chartLine.yaxis"
+                        ></apx-chart>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>

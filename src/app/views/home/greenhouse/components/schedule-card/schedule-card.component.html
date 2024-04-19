@@ -1,0 +1,60 @@
+<div class="card col device-card">
+    <div class="mb-1 mt-2">
+        <div class="schedule__card-name-schedule">
+            <p class="text-bold">{{scheduleName}}</p>
+        </div>
+    </div>
+    <div class="row gx-5 mb-2">
+        <div class="schedule__card-status">
+            <div class="mb-2">
+                <p class="text-bold">Trạng thái:</p>
+            </div>
+            <div>
+                <div class="row" class="text-center">
+                    <p class="text-regular">OFF</p>
+                    <c-form-check class="col-3" [switch]="true" class = "text-center">
+                        <input cFormCheckInput checked type="checkbox" />
+                    </c-form-check>
+                    <p class="text-regular">ON</p>
+                </div>
+            </div>
+        </div>
+        <div class="schedule__card-time">
+            <div class="mb-2">
+                <p class="text-bold">Thời gian:</p>
+            </div>
+            <div class="text-center">
+                <p class="text-regular">{{scheduleStart}} - {{scheduleStop}}</p>
+            </div>
+        </div>
+        <div class="schedule__card-loop">
+            <div class="mb-2">
+                <p class="text-bold">Lặp lại:</p>
+            </div>
+            <div class="text-center">
+                <p class="text-regular">Hang ngay</p>
+            </div>
+        </div>
+        <div class="schedule__card-detail" style="display: flex; justify-content: space-between;">
+            <div class="mb-2" style="display: flex;">
+                <p class="text-bold">Rơ le: </p><span>2</span>
+            </div>
+            <div class="mb-2" style="display: flex;">
+                <p class="text-bold">Led: </p><span>2</span>
+            </div>
+            <div class="mb-2" style="display: flex;">
+                <p class="text-bold">Modbus: </p><span>2</span>
+            </div>
+        </div>
+        <div class="schedule__card-handle">
+            <button cButton color="danger" class="schedule__card-handle-item">
+                <svg cIcon name="cilSettings"></svg>
+                <div class="schedule__card-handle-item-text">Chi tiết</div>
+            </button>
+            <button cButton color="primary" class="schedule__card-handle-item">
+                <svg cIcon  name="cilTrash"></svg>  
+                <div class="schedule__card-handle-item-text">Xóa</div>
+            </button>
+        </div>
+    </div>
+</div>

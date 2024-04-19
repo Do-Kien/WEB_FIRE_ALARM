@@ -1,0 +1,72 @@
+<div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <c-container>
+    <c-row class="justify-content-center">
+      <c-col lg="7" md="9" xl="6">
+        <c-card class="mx-4">
+          <c-card-body class="p-4">
+            <form cForm [formGroup]="formRegister">
+              <h1>Đăng ký</h1>
+              <p class="text-medium-emphasis">Tạo tài khoản của bạn</p>
+              <c-input-group class="mb-1">
+                <span cInputGroupText>
+                  <svg cIcon name="cilUser"></svg>
+                </span>
+                <!-- <input cFormControl placeholder="Tài khoản" /> -->
+                <input cFormControl formControlName="username" placeholder="Nhập Họ và Tên" type="text" />
+              </c-input-group>
+              <div class="alert-text mb-2">
+                <small *ngIf="formRegister.get('username')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                <small *ngIf="formRegister.get('username')?.errors?.['minlength']">Tối thiểu 5 kí tự *</small>
+              </div>
+              <c-input-group class="mb-1">
+                <span cInputGroupText>@</span>
+                <input cFormControl formControlName="email" placeholder="Nhập Email" type="text"/>
+              </c-input-group>
+              <div class="alert-text mb-2">
+                <small *ngIf="formRegister.get('email')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                <small *ngIf="formRegister.get('email')?.errors?.['pattern']">Email không hợp lệ *</small>
+              </div>
+              <div style="display: flex;">
+                <c-input-group class="mb-1">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input class="col-12" cFormControl formControlName="password" placeholder="Nhập mật khẩu" [type]="hidePassword ? 'password' : 'text'" />
+                </c-input-group>
+                <div class="icon-eye">
+                  <i class="fa-solid fa-eye" *ngIf="hidePassword==true" (click)="hidePassword = !hidePassword"></i>
+                  <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hidePassword==false" (click)="hidePassword = !hidePassword"></i>
+                </div>
+              </div>
+              <div class="alert-text mb-2">
+                <small *ngIf="formRegister.get('password')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                <small *ngIf="formRegister.get('password')?.errors?.['pattern']">Mật khẩu không đủ mạnh. Yêu cầu 8 kí tự a-z, A-Z,
+                  số, kí tự đặc biệt *</small>
+              </div>
+
+              <div style="display: flex;">
+                <c-input-group class="mb-1">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input cFormControl formControlName="rePassword" placeholder="Nhập lại mật khẩu" [type]="hideRePassword ? 'password' : 'text'" />
+                </c-input-group>  
+                <div class="icon-eye">
+                  <i class="fa-solid fa-eye" *ngIf="hideRePassword==true" (click)="hideRePassword = !hideRePassword"></i>
+                  <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hideRePassword==false" (click)="hideRePassword = !hideRePassword"></i>
+                </div>
+              </div>
+              <div class="alert-text mb-4">
+                <small *ngIf="formRegister.get('rePassword')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                <small *ngIf="formRegister.get('rePassword')?.errors?.['mustMatch'] != null">Mật khẩu không phù hợp *</small>
+              </div>
+              <div class="d-grid">
+                <button cButton color="success" (click)="register()" [disabled]="!formRegister.valid">Tạo tài khoản</button>
+              </div>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

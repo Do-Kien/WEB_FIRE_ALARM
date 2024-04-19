@@ -1,0 +1,90 @@
+.flex{
+    display: flex;
+}
+
+.container-dashboard{
+    max-width: 82rem;
+    margin: 0;
+    // margin-bottom: 2%;
+}
+
+.container-dashboard-chart{
+    min-height: 24rem;    
+}
+
+.container-dashboard-chart{
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #d8dbe0;
+}
+
+.container-dashboard-chart-header{
+    height: 3rem;
+}
+
+.container-dashboard-list-data{
+    background-color: #fff;
+    border-radius: 5px;    
+    // border: 1px solid #d8dbe0;
+}
+
+.container-dashboard-list-data table{
+    min-height: 200px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.container-dashboard-list-data img{
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+}
+
+.container-dashboard-chart-sensor{
+    background: white; 
+    height: 16rem;
+    border-radius: 5px;
+}
+
+.container-dashboard-data{
+    border: 1px solid #d8dbe0;
+    border-radius: 5px;    
+}
+
+.style-1{
+    background: linear-gradient(90deg, #f893ce 0%, #f4c192 100%);
+}
+
+.style-2{
+    background: linear-gradient(90deg, #95e0fa 0%, #6a9ddc 100%);
+}
+.style-3{
+    background: linear-gradient(90deg, #cd6be8 0%, #e9a2fd 100%);
+}
+.style-4{
+    background: linear-gradient(90deg, #b6fe94 0%, #4ec044 100%);
+}
+
+.nav{
+    border: 1px solid #d8dbe0;
+    border-radius: 5px;
+}
+
+.nav .nav-item:not(:last-child){
+    border-right: 1px solid #d8dbe0;
+}
+
+.nav .nav-link{
+    font-size: 13px;
+    color: #222;
+}
+
+.nav .nav-link.active{
+    background-color: #a5c8f3;
+}
+
+.container-dashboard-info{
+    background-color: #fff;
+    border-radius: 5px;
+    min-height: 388px;    
+}

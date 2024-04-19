@@ -1,0 +1,193 @@
+<div class="card border-top-primary border-top-3 mb-3" style="max-width: 82rem;">
+
+    <div class="card-header">
+        <h5>Danh sách cảm biến</h5>    
+        <div class="row my-4 gx-5">
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+                <span class="col-4">Tủ điều khiển</span>
+                <select class="form-select col-8" [(ngModel)]="filterGreenhouseAll">
+                    <option *ngFor="let option of optionGreenhouseAll" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+                <span class="col-4">Khu vực</span>
+                <select class="form-select col-8" [(ngModel)]="filterZoneAll">
+                  <option *ngFor="let option of optionZoneAll" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="gap: 5%; display: flex;">
+                <button type="button" class="btn btn-outline-info" style="min-width: 5%;" (click)="filterOption()">Tìm kiếm</button>
+                <button type="button" class="btn btn-outline-primary" style="min-width: 5%;"
+                [cModalToggle]="selectGreenhouseModal.id" [disabled]="!buttonAddNew">Thêm mới</button>
+            </div>
+        </div>
+    </div>
+        
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên cảm biến</th>
+                <th scope="col">Tủ điều khiển</th>
+                <th scope="col">Khu vực</th>
+                <th scope="col">Cập nhật</th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let sensor of sensors; let i=index">
+                <th scope="row">{{i+1}}</th>
+                <td>{{sensor.name}}</td>
+                <td>{{sensor.greenhouseName}}</td>
+                <td *ngIf="sensor.zoneName == 'Chưa có'" style="color: red;">{{sensor.zoneName}}</td>
+                <td *ngIf="sensor.zoneName != 'Chưa có'">{{sensor.zoneName}}</td>
+                <td>{{sensor.timeUpdate}} phút/ lần</td>
+                <td *ngIf="sensor.isConfig == false" style="color: rgb(0, 45, 128);">Đang cấu hình</td>
+                <td *ngIf="sensor.active == true && sensor.isConfig == true" style="color: green;">Đang hoạt động</td>
+                <td *ngIf="sensor.active == false && sensor.isConfig == true" style="color: red;">Ngưng hoạt động</td>
+                <td>
+                    <a class="mr-2"><i class="fa-solid fa-pen-to-square icon-pen-to-square" 
+                        cTooltip="Sửa" cTooltipPlacement="top" [cModalToggle]="editSensorModal.id"
+                        (click)="getEditIdSensor(sensor.id, sensor.name, sensor.mac, sensor.greenhouseId,
+                        sensor.timeUpdate, sensor.min, sensor.max, sensor.paramA, sensor.paramB, sensor.paramC,
+                        sensor.type, sensor.isConfig, sensor.battery, sensor.active, sensor.currentValue)"></i>
+                    </a>/
+                    <a class="ml-2"><i class="fa-solid fa-trash-can icon-trash-can" cTooltip="Xóa" cTooltipPlacement="top" 
+                        [cModalToggle]="deleteSensorModal.id" (click)="getDeleteIdSensor(sensor.id, sensor.mac, sensor.greenhouseId)"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal select greenhouse -->
+<c-modal #selectGreenhouseModal backdrop="static" id="selectGreenhouseModal" alignment="center">
+    <c-modal-header>
+      <h5 cModalTitle>Vui lòng lựa chọn tủ điều khiển...</h5>
+      <button [cModalToggle]="selectGreenhouseModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="col-12 col-md-12 col-lg-12 mt-3 mb-3 ml-0 pl-0" style="display: flex;">
+            <span class="col-4">Tủ điều khiển</span>
+            <select class="form-select col-8" [(ngModel)]="greenhouseSelected">
+                <option *ngFor="let option of optionGreenhouse" [ngValue]="option">{{option.name}}</option>
+            </select>
+        </div>
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="selectGreenhouseModal.id" cButton color="secondary">
+          Hủy bỏ
+        </button>
+        <button cButton color="primary" [cModalToggle]="addSensorModal.id" (click)="scanSensor()">Tìm kiếm</button>
+      </c-modal-footer>
+</c-modal>
+
+<!-- Modal add sensor -->
+<c-modal #addSensorModal backdrop="static" id="addSensorModal" alignment="center">
+    <c-modal-header>
+      <h5 cModalTitle>Đang dò tìm cảm biến...</h5>
+      <button [cModalToggle]="addSensorModal.id" cButtonClose (click)="cancelScan()"></button>
+    </c-modal-header>
+    <c-modal-body>
+        <div class="mb-3">
+            <span>Hệ thống đang dò tìm thiết bị cảm biến. Vui lòng chờ trong giây lát!</span>
+        </div>
+        <div class="mb-3" style="margin-left: 25%;" id="spinnerScan">
+            <c-spinner color="primary" variant="grow"></c-spinner>
+            <c-spinner color="secondary" variant="grow"></c-spinner>
+            <c-spinner color="success" variant="grow"></c-spinner>
+            <c-spinner color="danger" variant="grow"></c-spinner>
+            <c-spinner color="warning" variant="grow"></c-spinner>
+            <c-spinner color="info" variant="grow"></c-spinner>
+            <c-spinner color="light" variant="grow"></c-spinner>
+            <c-spinner color="dark" variant="grow"></c-spinner>
+        </div>
+        <div class="mb-3" style="margin-left: 40%;">
+            <h5 style="color:blueviolet" id="timeScan"> 60s còn lại</h5>
+        </div>
+    </c-modal-body>
+    <c-modal-footer >
+        <div class="retry-scan" id="retryScan">
+            <button [cModalToggle]="addSensorModal.id" cButton color="secondary" id="cancelButton" (click)="cancelScan()">Hủy bỏ</button>
+            <button cButton color="primary" (click)="retryScan()">Thử lại</button>
+        </div>
+      
+    </c-modal-footer>
+</c-modal>
+
+<!-- Modal edit sensor -->
+<c-modal #editSensorModal backdrop="static" id="editSensorModal" alignment="center">
+    <c-modal-header>
+      <h5 cModalTitle>Cập nhật cảm biến</h5>
+      <button [cModalToggle]="editSensorModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+      <form cForm [formGroup]="formSensor">
+          <div class="mb-3">
+            <label cLabel>Tên cảm biến</label>
+            <input cFormControl formControlName="name" placeholder="Nhập Tên cảm biến" type="text"/>
+            <div class="alert-text">
+                <small *ngIf="formSensor.get('name')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+            </div>  
+          </div>
+          <div class="mb-3">
+            <label cLabel>Tủ điều khiển</label>
+            <input cFormControl formControlName="greenhouseName" placeholder="Nhập Tủ điều khiển" type="text"/>
+          </div>
+          <div class="mb-3">
+            <label cLabel>Thời gian Cập nhật</label>
+            <input cFormControl formControlName="timeUpdate" placeholder="Nhập Thời gian Cập nhật" type="number"/>
+            <div class="alert-text">
+                <small *ngIf="formSensor.get('timeUpdate')?.errors?.['min']">Thời gian cập nhật nhỏ nhất là 1 phút *</small>
+                <small *ngIf="formSensor.get('timeUpdate')?.errors?.['max']">Thời gian cập nhật lớn nhất là 120 phút *</small>
+            </div>  
+          </div>
+          <div class="mb-3">
+            <label cLabel>Giá trị nhỏ nhất</label>
+            <input cFormControl formControlName="min" placeholder="Giá trị nhỏ nhất" type="text"/>
+          </div>
+          <div class="mb-3">
+            <label cLabel>Giá trị lớn nhất</label>
+            <input cFormControl formControlName="max" placeholder="Nhập Giá trị lớn nhất" type="text"/>
+          </div>
+          <div class="mb-3" style="display: flex;">
+            <div class="mb-3 col-4">
+                <label cLabel>CAB1</label>
+                <input cFormControl formControlName="paramA" placeholder="Nhập CAB1" type="text"/>
+            </div>
+            <div class="mb-3 col-4">
+                <label cLabel>CAB2</label>
+                <input cFormControl formControlName="paramB" placeholder="Nhập CAB2" type="text"/>
+            </div>
+            <div class="mb-3 col-4">
+                <label cLabel>CAB3</label>
+                <input cFormControl formControlName="paramC" placeholder="Nhập CAB3" type="text"/>
+            </div>
+          </div>
+      </form>
+    </c-modal-body>
+    <c-modal-footer>
+      <button [cModalToggle]="editSensorModal.id" cButton color="secondary">Hủy bỏ</button>
+      <button cButton color="primary" [cModalToggle]="editSensorModal.id" [disabled]="!formSensor.valid" (click)="editSensor()">Cập nhật</button>
+    </c-modal-footer>
+</c-modal>
+
+<!-- Modal delete sensor -->
+<c-modal #deleteSensorModal backdrop="static" id="deleteSensorModal" alignment="center">
+    <c-modal-header>
+      <h5 cModalTitle>Xóa cảm biến</h5>
+      <button [cModalToggle]="deleteSensorModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+      Bạn có chắc chắn muốn xóa Cảm biến này không ?
+      Dữ liệu không thể khôi phục được sau khi xóa .
+    </c-modal-body>
+    <c-modal-footer>
+      <button [cModalToggle]="deleteSensorModal.id" cButton color="secondary">Hủy bỏ</button>
+      <button cButton color="danger" [cModalToggle]="deleteSensorModal.id" (click)="deleteSensor()">Xác nhận</button>
+    </c-modal-footer>
+</c-modal>
+
+<app-show-alerts></app-show-alerts>

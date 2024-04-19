@@ -1,0 +1,237 @@
+<div class="card border-top-primary border-top-3 mb-3" style="max-width: 82rem;">
+
+  <div class="card-header">
+    <h5>Danh sách tài khoản</h5>
+    <div class="row my-4 gx-5">
+      <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+        <span class="col-4">Nhà kính</span>
+        <select class="form-select col-8" [(ngModel)]="farmSelected">
+          <!-- <option selected>Tất cả</option> -->
+          <option *ngFor="let option of optionFarm" [ngValue]="option">{{option.farmName}}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+        <span class="col-4">Tài khoản</span>
+        <app-filter-form (filterTextChanged)="getFilterText($event)" [filterText]="filterText"></app-filter-form>
+      </div>
+      <div class="col-12 col-md-12 col-lg-4 mb-4" style="gap: 5%; display: flex;">
+        <button type="button" class="btn btn-outline-info" style="min-width: 5%;" (click)="filterOption()">Tìm kiếm</button>
+        <button type="button" class="btn btn-outline-primary" style="min-width: 5%;"
+          [cModalToggle]="addAccountModal.id" (click)="resetFormUser()">Thêm mới</button>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th scope="col">STT</th>
+        <th scope="col">Họ và Tên</th>
+        <th scope="col">Tài khoản</th>
+        <th scope="col">Loại tài khoản</th>
+        <th scope="col">Nhà kính</th>
+        <th scope="col">Trạng thái</th>
+        <th scope="col">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let account of accounts; let i=index">
+        <th scope="row">{{i + 1}}</th>
+        <td>{{account.name}}</td>
+        <td>{{account.username}}</td>
+        <td *ngIf="account.role == 0">SuperAdmin</td>
+        <td *ngIf="account.role == 1">Admin</td>
+        <td *ngIf="account.role == 2">User</td>
+        <td>{{account.currentFarm}}</td>
+        <td *ngIf="account.active == true" style="color: green;">Đang hoạt động</td>
+        <td *ngIf="account.active == false" style="color: red;">Ngưng hoạt động</td>
+        <td>
+          <a class="mr-2"><i class="fa-solid fa-pen-to-square icon-pen-to-square" cTooltip="Sửa" cTooltipPlacement="top"
+              [cModalToggle]="editAccountModal.id" (click)="getEditIdAcount(account.id, account.name, account.username, account.role)"></i>
+          </a>/
+          <a class="ml-2"><i class="fa-solid fa-trash-can icon-trash-can" cTooltip="Xóa" cTooltipPlacement="top"
+              [cModalToggle]="deleteAccountModal.id" (click)="getDeleteIdAcount(account.id)"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal add users -->
+<c-modal #addAccountModal backdrop="static" id="addAccountModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Thêm mới tài khoản</h5>
+    <button [cModalToggle]="addAccountModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formUser">
+      <div class="mb-3">
+        <label cLabel>Họ và Tên</label>
+        <input cFormControl formControlName="userName" placeholder="Nhập Họ và Tên" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formUser.get('userName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+          <small *ngIf="formUser.get('userName')?.errors?.['minlength']">Tối thiểu 5 kí tự *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Tài khoản</label>
+        <input cFormControl formControlName="account" placeholder="Nhập tài khoản" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formUser.get('account')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+          <small *ngIf="formUser.get('account')?.errors?.['minlength']">Tối thiểu 5 kí tự *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Mật khẩu</label>
+        <div style="display: flex;">
+          <input class="col-12" cFormControl formControlName="password" placeholder="Nhập mật khẩu" [type]="hidePassword ? 'password' : 'text'" />
+          <div class="icon-eye">
+            <i class="fa-solid fa-eye" *ngIf="hidePassword==true" (click)="hidePassword = !hidePassword"></i>
+            <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hidePassword==false" (click)="hidePassword = !hidePassword"></i>
+          </div>
+        </div>
+        <div class="alert-text">
+          <small *ngIf="formUser.get('password')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+          <small *ngIf="formUser.get('password')?.errors?.['pattern']">Mật khẩu không đủ mạnh. Yêu cầu 8 kí tự a-z, A-Z,
+            số, kí tự đặc biệt *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel >Nhắc lại mật khẩu</label>
+        <div style="display: flex;">
+          <input cFormControl formControlName="rePassword" placeholder="Nhập lại mật khẩu" [type]="hideRePassword ? 'password' : 'text'" />
+          <div class="icon-eye">
+            <i class="fa-solid fa-eye" *ngIf="hideRePassword==true" (click)="hideRePassword = !hideRePassword"></i>
+            <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hideRePassword==false" (click)="hideRePassword = !hideRePassword"></i>
+          </div>
+        </div>
+        <div class="alert-text">
+          <small *ngIf="formUser.get('rePassword')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+          <small *ngIf="formUser.get('rePassword')?.errors?.['mustMatch'] != null">Mật khẩu không phù hợp *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel >Loại tài khoản</label>
+        <select class="form-select" formControlName="role">
+          <option *ngFor="let option of optionRole" [ngValue]="option.value">{{option.viewValue}}</option>
+        </select>
+      </div>
+      <div class="mb-1">
+        <label cLabel >Nhà kính</label>
+        <!-- <input cFormControl  placeholder="Nhập mật khẩu" type="text" /> -->
+      </div>
+    </form>
+    <ng-multiselect-dropdown [placeholder]="'Chọn nhà kính'" [settings]="dropdownSettings" [data]="dropdownList"
+      [(ngModel)]="selectedItems">
+    </ng-multiselect-dropdown>
+    <div class="alert-text">
+      <small *ngIf="selectedItems.length < 1">Vui lòng lựa chọn nhà kính *</small>
+    </div>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="addAccountModal.id" cButton color="secondary">
+      Hủy bỏ
+    </button>
+    <button cButton [cModalToggle]="addAccountModal.id" color="primary" (click)="addAccount()">Thêm mới</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal edit users -->
+<c-modal #editAccountModal backdrop="static" id="editAccountModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Thêm mới tài khoản</h5>
+    <button [cModalToggle]="editAccountModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formUser">
+      <div class="mb-3">
+        <label cLabel>Họ và Tên</label>
+        <input cFormControl formControlName="userName" value="sdasdsad" type="text"/>
+        <div class="alert-text">
+          <small *ngIf="formUser.get('userName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+          <small *ngIf="formUser.get('userName')?.errors?.['minlength']">Tối thiểu 5 kí tự *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Tài khoản</label>
+        <input cFormControl formControlName="account" placeholder="Nhập tài khoản" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formUser.get('account')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+          <small *ngIf="formUser.get('account')?.errors?.['minlength']">Tối thiểu 5 kí tự *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Mật khẩu</label>
+        <div style="display: flex;">
+          <input class="col-12" cFormControl formControlName="password" placeholder="Nhập mật khẩu" [type]="hidePassword ? 'password' : 'text'" />
+          <div class="icon-eye">
+            <i class="fa-solid fa-eye" *ngIf="hidePassword==true" (click)="hidePassword = !hidePassword"></i>
+            <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hidePassword==false" (click)="hidePassword = !hidePassword"></i>
+          </div>
+        </div>
+        <div class="alert-text">
+          <small *ngIf="formUser.get('password')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+          <small *ngIf="formUser.get('password')?.errors?.['pattern']">Mật khẩu không đủ mạnh. Yêu cầu 8 kí tự a-z, A-Z,
+            số, kí tự đặc biệt *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel >Nhắc lại mật khẩu</label>
+        <div style="display: flex;">
+          <input cFormControl formControlName="rePassword" placeholder="Nhập lại mật khẩu" [type]="hideRePassword ? 'password' : 'text'" />
+          <div class="icon-eye">
+            <i class="fa-solid fa-eye" *ngIf="hideRePassword==true" (click)="hideRePassword = !hideRePassword"></i>
+            <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hideRePassword==false" (click)="hideRePassword = !hideRePassword"></i>
+          </div>
+        </div>
+        <div class="alert-text">
+          <small *ngIf="formUser.get('rePassword')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+          <small *ngIf="formUser.get('rePassword')?.errors?.['mustMatch'] != null">Mật khẩu không phù hợp *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel >Loại tài khoản</label>
+        <select class="form-select" formControlName="role">
+          <option *ngFor="let option of optionRole" [ngValue]="option.value">{{option.viewValue}}</option>
+        </select>
+      </div>
+      <div class="mb-1">
+        <label cLabel >Nhà kính</label>
+        <!-- <input cFormControl  placeholder="Nhập mật khẩu" type="text" /> -->
+      </div>
+    </form>
+    <ng-multiselect-dropdown [placeholder]="'Chọn nhà kính'" [settings]="dropdownSettings" [data]="dropdownList"
+      [(ngModel)]="selectedItems">
+    </ng-multiselect-dropdown>
+    <div class="alert-text">
+      <small *ngIf="selectedItems.length < 1">Vui lòng lựa chọn nhà kính *</small>
+    </div>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="editAccountModal.id" cButton color="secondary">
+      Hủy bỏ
+    </button>
+    <button cButton [cModalToggle]="editAccountModal.id" color="primary" (click)="editAccount()">Cập nhật</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal delete greenhouse -->
+<c-modal #deleteAccountModal backdrop="static" id="deleteAccountModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Xóa tài khoản</h5>
+    <button [cModalToggle]="deleteAccountModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    Bạn có chắc chắn muốn xóa Tài khoản này không ?
+    Dữ liệu không thể khôi phục được sau khi xóa .
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="deleteAccountModal.id" cButton color="secondary">
+      Hủy bỏ
+    </button>
+    <button cButton [cModalToggle]="deleteAccountModal.id" color="danger" (click)="deleteAccount()">Xác nhận</button>
+  </c-modal-footer>
+</c-modal>
+
+<app-show-alerts></app-show-alerts>

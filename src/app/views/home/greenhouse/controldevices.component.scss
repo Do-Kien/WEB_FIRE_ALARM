@@ -1,0 +1,39 @@
+span{
+    margin-top: 1.5%;
+    color: #6c757d;
+}
+
+.icon-trash-can{
+    color: red;
+}
+
+.icon-pen-to-square{
+    color: blue;
+}
+
+.flex{
+    display: flex;
+}
+
+.container-control-device{
+    max-width: 82rem;
+
+}
+
+.container-control-device-card{
+    height: 32rem;
+    background: #fff;
+    overflow: scroll;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+// .device-card{
+//     margin-top: 1%;
+//     border: 1px solid#321fdb;
+// }
+
+// .device-card-text{
+//     text-align: center;
+//     margin-top: 8%;
+// }

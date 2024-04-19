@@ -1,0 +1,226 @@
+<!--sidebar-->
+<c-sidebar
+  #sidebar="cSidebar"
+  class="d-print-none sidebar sidebar-fixed sidebar-new"
+  id="sidebar"
+  visible
+>
+  <c-sidebar-brand
+    [brandFull]="{
+      src: 'assets/img/logo/logo-rang-dong.png',
+      title: 'Smart Farm',
+      width: 200,
+      height: 46,
+      alt: 'Logo'
+    }"
+    [brandNarrow]="{
+      src: 'assets/img/logo/logo-rang-dong-icon.png',
+      width: 46,
+      height: 46,
+      alt: 'Logo'
+    }"
+    routerLink="./"
+  >
+  </c-sidebar-brand>
+    <perfect-scrollbar [config]="perfectScrollbarConfig">
+  <!--  [perfectScrollbar]="perfectScrollbarConfig"-->
+  <c-sidebar-nav
+    [navItems]="navItems"
+  >
+ 
+  </c-sidebar-nav>
+    </perfect-scrollbar>
+  <c-sidebar-toggler
+    *ngIf="!sidebar.narrow"
+    toggle="unfoldable"
+    cSidebarToggle="sidebar"
+  ></c-sidebar-toggler>
+</c-sidebar>
+
+<!--main-->
+<div class="wrapper d-flex flex-column min-vh-100 bg-light dark:bg-transparent">
+  <!--app-header-->
+  <app-default-header class="mb-4 d-print-none header header-sticky" position="sticky" sidebarId="sidebar" 
+  (updateProfile)="getVisibleProfile($event)" (changeFarm)="getVisibleFarm($event)"></app-default-header>
+
+  <c-modal [backdrop]="'static'" alignment="center" 
+    [visible]="visible" size="lg" (visibleChange)="handleProfileChange($event)">
+    <c-modal-header>
+      <h5 cModalTitle>Thông tin tài khoản</h5>
+      <button (click)="toggleProfile()" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body class="p-0">
+      <div class="col-12 px-0">
+        <div class="row gx-0">
+          <div class="col-4" style="background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))">
+            <div class="col-12 m-5 mb-3">
+              <img src="./assets/img/avatars/8.jpg" alt="avatar" style="border-radius: 5%;">
+            </div>
+            <div class="mt-3" style="text-align: center; font-weight: bold; color: white;">
+              <!-- <input type="file" (change)="onselectFile($event)"> -->
+              <i class="far fa-edit mb-3"></i>
+              <span> Thay đổi avatar</span>
+            </div>
+            <div style="text-align: center; font-weight: 500; color: white;">
+              <span>{{formUserInfo.get("email")?.value}}</span>
+            </div>
+
+          </div>
+          <div class="col-8" style="background:white;">
+            <div class="col-12">
+              <div class="col-12">
+                <form cForm [formGroup]="formUserInfo">
+                  <div class="mb-3 mt-3">
+                    <label cLabel>Tên người dùng</label>
+                    <input cFormControl formControlName="username" placeholder="Nhập tên người dùng" type="text"/>
+                    <div class="alert-text mb-2">
+                      <small *ngIf="formUserInfo.get('username')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                      <small *ngIf="formUserInfo.get('username')?.errors?.['minlength']">Tối thiểu 5 kí tự *</small>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label cLabel>Email</label>
+                    <input cFormControl formControlName="email" placeholder="Nhập email" type="text"/>
+                  </div>
+
+                  <div class="mb-3">
+                    <label cLabel>Đổi mật khẩu</label>
+                    <c-form-check>
+                      <input cFormCheckInput type="checkbox" style="margin-left: 3%;" (change)="getCheckBoxValue($event)"/>
+                    </c-form-check>
+                    <div style="display: flex;">
+                      <input cFormControl formControlName="password" placeholder="Nhập mật khẩu" [type]="hidePassword ? 'password' : 'text'"/>
+
+                      <div class="icon-eye" *ngIf="disableInput == false">
+                        <i class="fa-solid fa-eye" *ngIf="hidePassword==true" (click)="hidePassword = !hidePassword"></i>
+                        <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hidePassword==false" (click)="hidePassword = !hidePassword"></i>
+                      </div>
+                    </div>
+                    <div class="alert-text mb-2">
+                      <small *ngIf="formUserInfo.get('password')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label cLabel>Mật khẩu mới</label>
+                    <div style="display: flex;">
+                      <input cFormControl formControlName="newPassword" placeholder="Nhập mật khẩu mới" [type]="hideNewPassword ? 'password' : 'text'"/>
+                      <div class="icon-eye" *ngIf="disableInput == false">
+                        <i class="fa-solid fa-eye" *ngIf="hideNewPassword==true" (click)="hideNewPassword = !hideNewPassword"></i>
+                        <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hideNewPassword==false" (click)="hideNewPassword = !hideNewPassword"></i>
+                      </div>
+                    </div>
+                    <div class="alert-text mb-2">
+                      <small *ngIf="formUserInfo.get('newPassword')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                      <small *ngIf="formUserInfo.get('newPassword')?.errors?.['pattern']">Mật khẩu không đủ mạnh. Yêu cầu 8 kí tự a-z, A-Z,
+                        số, kí tự đặc biệt *</small>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label cLabel>Nhập lại mật khẩu mới</label>
+                    <div style="display: flex;">
+                      <input cFormControl formControlName="rePassword" placeholder="Nhập lại mật khẩu mới" [type]="hideRePassword ? 'password' : 'text'"/>
+                      <div class="icon-eye" *ngIf="disableInput == false">
+                        <i class="fa-solid fa-eye" *ngIf="hideRePassword==true" (click)="hideRePassword = !hideRePassword"></i>
+                        <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hideRePassword==false" (click)="hideRePassword = !hideRePassword"></i>
+                      </div>
+                    </div>
+                    <div class="alert-text mb-4">
+                      <small *ngIf="formUserInfo.get('rePassword')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                      <small *ngIf="formUserInfo.get('rePassword')?.errors?.['mustMatch'] != null">Mật khẩu không phù hợp *</small>
+                    </div>
+                  </div>
+                  </form>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </c-modal-body>
+    <c-modal-footer>
+      <button (click)="toggleProfile()" cButton color="secondary">Hủy bỏ</button>
+      <button cButton color="primary" [disabled]="!formUserInfo.valid">Cập nhật</button>
+    </c-modal-footer>
+  </c-modal>
+
+  <c-modal [backdrop]="'static'" alignment="center" 
+    [visible]="visibleFarm" size="lg" (visibleChange)="handleFarmChange($event)">
+    <c-modal-header>
+      <h5 cModalTitle>Thay đổi nhà kính</h5>
+      <button (click)="toggleFarm()" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body class="p-0">
+      <div class="col-12 px-0">
+        <div class="row gx-0">
+          <div class="col-4" style="height: 20rem; background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))">
+            <div class="col-12 mt-3 mb-3" style="text-align: center;">
+              <img src="./assets/icon/icon TT22 (29).png" alt="avatar" style="border-radius: 5%;" width="40%">
+            </div>
+            <div class="mt-3 " style="text-align: center; font-weight: bold; color: white;">
+              <i class="fa fa-home mb-3" aria-hidden="true"></i>
+              <span> {{currentFarmInfo[0].name}}</span>
+            </div>
+            <div class="mt-3" style="text-align: center; font-weight: 500; color: white;">
+              <span> {{currentFarmInfo[0].description}}</span>
+            </div>
+          </div>
+          <div class="col-8" style="background:white;">
+            <div class="col-12">
+              <div class="col-12">
+                <div cListGroup style="border-radius: 0; max-height: 20rem; overflow-y: overlay;">
+                  <button cListGroupItem [class.active]="active === farm.id" (click)="changeFarmActive(farm.id)"
+                  *ngFor="let farm of farms; let i = index" [value]="farm.id" >
+                  {{farm.name}}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </c-modal-body>
+    <!-- <c-modal-footer>
+      <button (click)="toggleFarm()" cButton color="secondary">Hủy bỏ</button>
+      <button cButton color="primary" [disabled]="!formUserInfo.valid">Cập nhật</button>
+    </c-modal-footer> -->
+  </c-modal>
+
+  <!--app-body-->
+  <div class="body flex-grow-1 px-3">
+    <c-container breakpoint="lg" class="h-auto">
+      <router-outlet></router-outlet>
+    </c-container>
+  </div>
+  <!--app footer-->
+  <app-default-footer></app-default-footer>
+</div>
+<style>
+  .sidebar-new{
+    --cui-sidebar-color: rgba(44, 56, 74, 0.95);
+    --cui-sidebar-bg: #fff;
+    --cui-sidebar-border-width: 0;
+    --cui-sidebar-border-color: transparent;
+    --cui-sidebar-brand-color: #fff;
+    /* --cui-sidebar-brand-bg: #5046e5;   */
+    --cui-sidebar-brand-bg: #d8dbe0;
+    --cui-sidebar-header-bg: rgba(0, 0, 21, 0.2);
+    --cui-sidebar-nav-title-color: rgba(44, 56, 74, 0.681);
+    --cui-sidebar-nav-link-color: rgba(44, 56, 74, 0.681);
+    /* --cui-sidebar-nav-link-color: #5046e5;; */
+    --cui-sidebar-nav-link-bg: transparent;
+    --cui-sidebar-nav-link-icon-color: #5046e5;
+    --cui-sidebar-nav-link-hover-color: rgba(255, 255, 255, 0.87);
+    --cui-sidebar-nav-link-hover-bg: linear-gradient(90deg, #00F29B 0%, #0731C7 100%);
+    --cui-sidebar-nav-link-hover-icon-color: rgba(255, 255, 255, 0.87);
+    --cui-sidebar-nav-link-active-color: #fff;
+    --cui-sidebar-nav-link-active-bg: linear-gradient(90deg, #00F29B 0%, #0731C7 100%);
+    --cui-sidebar-nav-link-active-icon-color: #5046e5;
+    --cui-sidebar-nav-link-disabled-color: rgba(44, 56, 74, 0.38);
+    --cui-sidebar-nav-link-disabled-icon-color: rgba(44, 56, 74, 0.681);
+    --cui-sidebar-nav-group-bg: transparent;
+    --cui-sidebar-nav-group-toggle-show-color: #5046e5;
+    --cui-sidebar-toggler-bg: #d8dbe0;
+    --cui-sidebar-toggler-hover-bg: #b1b7c1;
+  }
+</style>

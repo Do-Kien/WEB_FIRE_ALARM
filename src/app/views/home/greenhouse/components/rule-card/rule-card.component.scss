@@ -1,0 +1,35 @@
+.text-center {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.text-bold {
+    font-weight: 500;
+    margin: 0 0 0 0;
+}
+
+.text-regular {
+    font-weight: 400;
+    margin: 0 0 0 0;
+}
+
+.schedule__card-handle {
+    // background: #f08585;
+    justify-content: space-around;
+    display: flex;
+}
+
+.schedule__card-handle .schedule__card-handle-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+}
+
+.schedule__card-name-schedule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

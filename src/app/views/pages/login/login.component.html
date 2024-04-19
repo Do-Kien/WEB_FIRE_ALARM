@@ -1,0 +1,87 @@
+<div class="login-bg-image min-vh-100 d-flex flex-row align-items-center">
+  <c-container>
+    <c-row class="justify-content-center">
+      <c-col md="4">
+        <c-card-group>
+          <c-card class="p-4 user-login">
+            <c-card-body>              
+              <form cForm [formGroup]="formLogin">                
+                <h1 class="text-center">Đăng nhập</h1>
+                <label class="mb-2">E-mail</label>
+                <c-input-group class="mb-2">
+									<input type="text" class="form-control" placeholder="Nhập email" autofocus cFormControl formControlName="username" />
+                </c-input-group>
+                <div class="alert-text">
+                  <small *ngIf="formLogin.get('username')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                <small *ngIf="formLogin.get('username')?.errors?.['pattern']">Email không hợp lệ *</small>
+                </div>
+                <label class="mb-2">Password</label>
+                <div style="display: flex;">                  
+                  <c-input-group class="mb-2">
+                    <input [type]="hidePassword ? 'password' : 'text'" class="form-control" placeholder="Mật khẩu" cFormControl formControlName="password" />
+                  </c-input-group>
+                  <div class="icon-eye mb-2">
+                    <i class="fa-solid fa-eye" *ngIf="hidePassword==true" (click)="hidePassword = !hidePassword"></i>
+                    <i class="fa-sharp fa-solid fa-eye-slash" *ngIf="hidePassword==false" (click)="hidePassword = !hidePassword"></i>
+                  </div>
+  
+                </div>
+                <div class="alert-text mb-2">
+                  <small *ngIf="formLogin.get('password')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+                </div>
+                <c-row>
+                  <div>
+                    <button cButton class="px-0 float-end text-decoration-none text-white" color="link" [cModalToggle]="resetPasswordModal.id" (click)="resetFormForgotPassword()">
+                      Quên mật khẩu?
+                    </button>
+                  </div>                  
+                </c-row>
+                <c-row>
+                  <div>
+                    <button cButton class="px-4 w-100" color="primary" (click)="login()" [disabled]="!formLogin.valid">
+                      Đăng nhập
+                    </button>
+                  </div>                  
+                </c-row>
+                <hr/>
+                <c-row>
+                  <div class="text-center text-white">
+                    Không có tài khoản? 
+                    <button cButton class="px-0 pt-0 fw-bold" color="link" routerLink="/register">
+                      Đăng ký !
+                    </button>
+                  </div>                  
+                </c-row>
+              </form>
+            </c-card-body>
+          </c-card>
+        </c-card-group>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>
+
+<!-- Modal forgot password -->
+<c-modal #resetPasswordModal backdrop="static" id="resetPasswordModal" alignment="center">
+  <c-modal-header>
+    <h1>Quên mật khẩu</h1>
+    <button [cModalToggle]="resetPasswordModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formForgotPassword">
+      <p class="text-medium-emphasis">Vui lòng nhập tài khoản của bạn</p>
+      <c-input-group class="mb-2">
+        <span cInputGroupText>@</span>
+        <input cFormControl formControlName="email" placeholder="Nhập Email" type="text"/>
+      </c-input-group>
+      <div class="alert-text">
+        <small *ngIf="formForgotPassword.get('email')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+      <small *ngIf="formForgotPassword.get('email')?.errors?.['pattern']">Email không hợp lệ *</small>
+      </div>
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="resetPasswordModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton [cModalToggle]="resetPasswordModal.id" color="primary" (click)="forgotPassword()">Xác nhận</button>
+  </c-modal-footer>
+</c-modal>

@@ -1,0 +1,77 @@
+<router-outlet></router-outlet>
+<div class="card border-top-primary border-top-3 mb-3" style="max-width: 82rem;">
+
+    <div class="card-header">
+        <h5>Danh sách luật điều khiển</h5>
+        <div class="row my-4 gx-5">
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+                <span class="col-4">Tủ điều khiển</span>
+                <select class="form-select col-8" [(ngModel)]="filterGreenhouseAll">
+                    <option *ngFor="let option of optionGreenhouseAll" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+                <span class="col-4">Khu vực</span>
+                <select class="form-select col-8" [(ngModel)]="filterZoneAll">
+                    <option *ngFor="let option of optionZoneAll" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 mb-4" style="gap: 5%; display: flex;">
+                <button type="button" class="btn btn-outline-info" style="min-width: 5%;">Tìm kiếm</button>
+                <button type="button" class="btn btn-outline-primary" style="min-width: 5%;" routerLink="./add">Thêm mới</button>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên luật</th>
+                <th scope="col">Tủ điều khiển</th>
+                <th scope="col">Khu vực</th>
+                <th scope="col">Thời gian</th>
+                <th scope="col">Logic</th>
+                <th scope="col">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let rule of listRules; let i = index">
+                <th scope="row">{{i}}</th>
+                <td>{{rule.name}}</td>
+                <td>{{rule.greenhouseName}}</td>
+                <td>{{rule.zoneName}}</td>
+                <td>{{rule.start}} - {{rule.stop}}</td>
+                <td>{{rule.logic}}</td>
+                <td>
+                    <a class="mr-2"><i class="fa-solid fa-pen-to-square icon-pen-to-square" cTooltip="Sửa" cTooltipPlacement="top"
+                            (click)="goToEditRule(rule)"></i>
+                    </a>/
+                    <a class="ml-2"><i class="fa-solid fa-trash-can icon-trash-can" cTooltip="Xóa" cTooltipPlacement="top"
+                        [cModalToggle]="deleteRuleModal.id" (click)="setIdRule(rule.id)"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal delete rule -->
+<c-modal #deleteRuleModal backdrop="static" id="deleteRuleModal" alignment="center">
+    <c-modal-header>
+        <h5 cModalTitle>Xóa luật điều khiển</h5>
+        <button [cModalToggle]="deleteRuleModal.id" cButtonClose></button>
+    </c-modal-header>
+    <c-modal-body>
+        Bạn có chắc chắn muốn xóa Luật điều khiển này không ?
+        Dữ liệu không thể khôi phục được sau khi xóa .
+    </c-modal-body>
+    <c-modal-footer>
+        <button [cModalToggle]="deleteRuleModal.id" cButton color="secondary">
+            Hủy bỏ
+        </button>
+        <button cButton color="danger" (click)="deleteRule()">Xác nhận</button>
+    </c-modal-footer>
+</c-modal>
+
+<app-show-alerts></app-show-alerts>

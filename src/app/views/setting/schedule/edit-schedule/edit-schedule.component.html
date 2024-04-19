@@ -1,0 +1,83 @@
+<div class="card border-top-primary border-top-3 mb-1" style="max-width: 82rem;">
+    <div class="row card-header" style="gap:10%; margin: 0;">
+        <div class="mb-3 col-12 col-md-12 col-lg-5">
+            <div class="mb-3 flex">
+                <span class="col-6">Tên lịch</span>
+                <form cForm [formGroup]="formSchedule">
+                    <input cFormControl formControlName="ruleName" style="width: 100%;" placeholder="Nhập tên lịch" type="text" />
+                </form>
+            </div>
+            <div class="mb-3 flex">
+                <span class="col-0 col-md-6 col-lg-6">Tủ điều khiển</span>
+                <select class="form-select" [(ngModel)]="filterGreenhouse" (ngModelChange)="onSelectedGreenhouseChange($event)">
+                    <option *ngFor="let option of optionGreenhouse" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3 col-12 col-md-12 col-lg-5">
+            <div class="mb-3 flex">
+                <span class="col-6">Khu vực</span>
+                <select class="form-select" [(ngModel)]="filterZoneAll" (ngModelChange)="onSelectedGreenhouseChange($event)">
+                    <option *ngFor="let option of optionZoneAll" [ngValue]="option.id">{{option.name}}</option>
+                </select>
+            </div>
+
+            <div class="mb-3 flex">
+                <span class="col-6">Đầu ra</span>
+                <select class="form-select col-6">
+                    <option *ngFor="let option of optionDeviceType" [ngValue]="option.value">{{option.viewValue}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3 col-12 col-md-12 col-lg-5" style="display: flex;">
+            <span class="col-6">Lặp lại</span>
+            <div class="col-6 col-md-6 col-lg-6 p-0" >
+                <ng-multiselect-dropdown [placeholder]="'Chọn lặp lại'" [settings]="dropdownSettings" [data]="dropdownListDay"
+                [(ngModel)]="selectedDayItems">
+                </ng-multiselect-dropdown>
+            </div>
+        </div>
+        <div class="mb-3 col-12 col-md-12 col-lg-5">
+            <div class="mb-3 flex">
+                <span class="col-6">Thời gian</span>
+            </div>
+        </div>
+    </div>
+   
+    <div class="" [formGroup]="form">
+        <table class="table table-striped table-hover" formArrayName="timer">
+            <thead>
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Bắt đầu</th>
+                    <th scope="col">Kết thúc</th>
+                    <th scope="col"><button cButton color="info" (click)="addTimeForm()">Thêm mốc</button></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
+                    <td>{{i+1}}</td>
+                    <td><input cFormControl type="time" formControlName="timeStart"/></td>
+                    <td><input cFormControl type="time" formControlName="timeStop"/></td>
+                    <td>
+                        <a class="ml-2"><i class="fa-solid fa-trash-can icon-trash-can" cTooltip="Xóa"
+                            cTooltipPlacement="top" (click)="deleteTimeForm(i)"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="container p-0">
+	<dual-list [source]="source" [key]="key" [display]="display" [(destination)]="target" [format]="format" height="200px"></dual-list>
+</div>
+
+<div class="device-card-button mb-3 col-9 col-md-6 col-lg-3">
+    <button cButton color="secondary" routerLink="../">Hủy bỏ</button>
+    <button cButton color="primary" (click)="addSchedule()">Cập nhật</button>
+</div>
+
+<app-show-alerts></app-show-alerts>

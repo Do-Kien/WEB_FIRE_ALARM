@@ -1,0 +1,182 @@
+<div class="card border-top-primary border-top-3 mb-3" style="max-width: 82rem;">
+
+  <div class="card-header">
+    <h5>Danh sách thiết bị</h5>
+    <div class="row my-4 gx-5">
+      <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+        <span class="col-4">Tủ điều khiển</span>
+        <select class="form-select col-8" [(ngModel)]="filterGreenhouseAll">
+          <option *ngFor="let option of optionGreenhouseAll" [ngValue]="option.id">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-12 col-lg-4 mb-4" style="display: flex;">
+        <span class="col-4">Khu vực</span>
+        <select class="form-select col-8" [(ngModel)]="filterZoneAll">
+          <option *ngFor="let option of optionZoneAll" [ngValue]="option.id">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-12 col-lg-4 mb-4" style="gap: 5%; display: flex;">
+        <button type="button" class="btn btn-outline-info" style="min-width: 5%;" (click)="filterOption()">Tìm kiếm</button>
+        <button type="button" class="btn btn-outline-primary" style="min-width: 5%;"
+          [cModalToggle]="addDeviceModal.id" (click)="resetFormDevice()" [disabled]="!buttonAddNew">Thêm mới</button>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th scope="col">STT</th>
+        <th scope="col">Tên thiết bị</th>
+        <th scope="col">Tủ điều khiển</th>
+        <th scope="col">Khu vực</th>
+        <th scope="col">Trạng thái</th>
+        <th scope="col">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let device of devices; let i=index">
+        <th scope="row">{{i+1}}</th>
+        <td>{{device.name}}</td>
+        <td>{{device.greenhouseName}}</td>
+        <td *ngIf="device.zoneName == 'Chưa có'" style="color: red;">{{device.zoneName}}</td>
+        <td *ngIf="device.zoneName != 'Chưa có'">{{device.zoneName}}</td>
+        <td *ngIf="device.active == true" style="color: green;">Đang bật</td>
+        <td *ngIf="device.active == false" style="color: red;">Đang tắt</td>
+        <td>
+          <a class="mr-2"><i class="fa-solid fa-pen-to-square icon-pen-to-square" cTooltip="Sửa" cTooltipPlacement="top"
+              [cModalToggle]="editDeviceModal.id" (click)="getEditDevice(device.id, device.name, device.greenhouseId, device.avatar, device.pin)"></i>
+          </a>/
+          <a class="ml-2"><i class="fa-solid fa-trash-can icon-trash-can" cTooltip="Xóa" cTooltipPlacement="top"
+              [cModalToggle]="deleteDeviceModal.id" (click)="getDeleteIdDevice(device.id, device.greenhouseId, device.pin)"></i>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal add device -->
+<c-modal #addDeviceModal backdrop="static" id="addDeviceModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Thêm mới thiết bị</h5>
+    <button [cModalToggle]="addDeviceModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formDevice">
+      <div class="mb-3">
+        <label cLabel>Tên thiết bị</label>
+        <input cFormControl formControlName="deviceName" placeholder="Nhập tên thiết bị" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formDevice.get('deviceName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Tủ điều khiển</label>
+        <select class="form-select" formControlName="greenhouseId" [(ngModel)]="greenhouseSelected"
+        (ngModelChange)="onSelectedGreenhouseChange($event)">
+          <option *ngFor="let option of optionGreenhouse" [ngValue]="option.id">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Loại thiết bị</label>
+        <select class="form-select" formControlName="deviceType" [(ngModel)]="selectedType" (ngModelChange)="selectType()">
+          <option *ngFor="let option of optionDeviceType" [ngValue]="option.value">{{option.viewValue}}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Chỉ số PIN</label>
+        <select class="form-select" formControlName="indexKey">
+          <option *ngFor="let option of optionIndexKey" [ngValue]="option.value">{{option.viewValue}}</option>
+        </select>
+      </div>
+      <div class="row mb-3">
+        <label cLabel>Chọn hình đại diện</label>
+        <div class="row relay__add__image-gallery">
+          <div class="col-3 relay__add__image-gallery__image-container" *ngFor="let image of optionImages">
+            <img src="../../../../assets/icon/{{image.value}}" alt="image" width="100%" height="100%" (click)="selectIcon(image.value)">
+          </div>
+        </div> 
+      </div>
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="addDeviceModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton [cModalToggle]="addDeviceModal.id" color="primary" (click)="addDevice()" [disabled]="!formDevice.valid">Thêm mới</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal edit device -->
+<c-modal #editDeviceModal backdrop="static" id="editDeviceModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Cập nhật thiết bị</h5>
+    <button [cModalToggle]="editDeviceModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <form cForm [formGroup]="formDevice">
+      <div class="mb-3">
+        <label cLabel>Tên thiết bị</label>
+        <input cFormControl formControlName="deviceName" placeholder="Nhập Tên thiết bị" type="text" />
+        <div class="alert-text">
+          <small *ngIf="formDevice.get('deviceName')?.errors?.['required']">Vui lòng nhập thông tin *</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Tủ điều khiển</label>
+        <select class="form-select" formControlName="greenhouseId">
+          <option *ngFor="let option of optionGreenhouse" [ngValue]="option.id">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Loại thiết bị</label>
+        <select class="form-select" formControlName="deviceType">
+          <option *ngFor="let option of optionDeviceType" [ngValue]="option.value">{{option.viewValue}}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Chỉ số PIN</label>
+        <select class="form-select" formControlName="indexKey">
+          <!-- <option *ngFor="let option of optionIndexKey" [ngValue]="option.value">{{option.viewValue}}</option> -->
+          <option *ngIf="pin == 'relay0'">0</option>
+          <option *ngIf="pin == 'relay1'">1</option>
+          <option *ngIf="pin == 'relay2'">2</option>
+          <option *ngIf="pin == 'relay3'">3</option>
+          <option *ngIf="pin == 'relay4'">4</option>
+          <option *ngIf="pin == 'relay5'">5</option>
+          <option *ngIf="pin == 'relay6'">6</option>
+          <option *ngIf="pin == 'relay7'">7</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label cLabel>Chọn hình đại diện</label>
+        <div class="row relay__edit__image-gallery" >
+          <div class="col-3 relay__edit__image-gallery__image-container" *ngFor="let image of optionImages">
+            <img src="../../../../assets/icon/{{image.value}}" alt="image" width="100%" height="100%" (click)="selectEditIcon(image.value)">
+          </div>
+        </div> 
+      </div>
+    </form>
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="editDeviceModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton [cModalToggle]="editDeviceModal.id" color="primary" [disabled]="!formDevice.valid" (click)="editDevice()">Cập nhật</button>
+  </c-modal-footer>
+</c-modal>
+
+<!-- Modal delete device -->
+<c-modal #deleteDeviceModal backdrop="static" id="deleteDeviceModal" alignment="center">
+  <c-modal-header>
+    <h5 cModalTitle>Xóa thiết bị </h5>
+    <button [cModalToggle]="deleteDeviceModal.id" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    Bạn có chắc chắn muốn xóa Thiết bị này không ?
+    Dữ liệu không thể khôi phục được sau khi xóa .
+  </c-modal-body>
+  <c-modal-footer>
+    <button [cModalToggle]="deleteDeviceModal.id" cButton color="secondary">Hủy bỏ</button>
+    <button cButton [cModalToggle]="deleteDeviceModal.id" color="danger" (click)="deleteDevice()">Xác nhận</button>
+  </c-modal-footer>
+</c-modal>
+
+<app-show-alerts></app-show-alerts>
